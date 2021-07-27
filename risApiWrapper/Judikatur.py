@@ -202,11 +202,11 @@ def _sortResults(rawResults: list, sortKey:str, ascending:bool):
     return rawResults
 
 def _rechtssatzOrEnscheidungstext(arguments:dict, entscheidungstexte:bool, reschtssaetze:bool):
-    """
-    This argument behaves strange.
-    If either parameter is provided, no matter if True or False, only results of this parameter are provided.
-    If both parameters are provided only results of the first one are provided
-    """
+    '''
+    "Dokumenttyp[SucheInRechtssaetzen]" and "Dokumenttyp[SucheInEntscheidungstexten]" behave strange.
+    If either parameter is provided, no matter if True or False, only results of this class are provided.
+    If both parameters are provided only results of the first one are provided.
+    '''
     if entscheidungstexte and reschtssaetze:
         return arguments
     if entscheidungstexte and not reschtssaetze:
@@ -214,4 +214,3 @@ def _rechtssatzOrEnscheidungstext(arguments:dict, entscheidungstexte:bool, resch
     if not entscheidungstexte and reschtssaetze:
         return arguments["Dokumenttyp[SucheInRechtssaetzen]" : True]
     raise ValueError('"entscheidungstexte" and "reschtssaetze" cannot both be False. Please provide at least one argument as True.')
-    
