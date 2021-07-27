@@ -7,7 +7,9 @@ class Justiz():
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
         
-        response = _request({"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "Dokumenttyp[SucheInEntscheidungstexten]": entscheidungstexte, "Dokumenttyp[SucheInRechtssaetzen]": rechtssaetze})
+        arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
+        
+        response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
 
@@ -23,7 +25,9 @@ class Vfgh():
             raise ValidationError(
                 "VfghRequestEntscheidungsart", ["Undefined", "Beschluss", "Erkenntnis", "Vergleich"])
 
-        response = _request({"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "Dokumenttyp[SucheInEntscheidungstexten]": entscheidungstexte, "Dokumenttyp[SucheInRechtssaetzen]": rechtssaetze, "VfghRequestEntscheidungsart": VfghRequestEntscheidungsart})
+        arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "VfghRequestEntscheidungsart": VfghRequestEntscheidungsart}
+
+        response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
         self.results = _convertResults(response)
 
@@ -39,7 +43,9 @@ class Vwgh():
             raise ValidationError(
                 "VwghRequestEntscheidungsart", ["Undefined", "Beschluss", "Erkenntnis", "BeschlussVS", "ErkenntnisVS"])
 
-        response = _request({"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "Dokumenttyp[SucheInEntscheidungstexten]": entscheidungstexte, "Dokumenttyp[SucheInRechtssaetzen]": rechtssaetze, "VwghRequestEntscheidungsart": VwghRequestEntscheidungsart})
+        arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "VwghRequestEntscheidungsart": VwghRequestEntscheidungsart}
+
+        response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
 
@@ -55,7 +61,9 @@ class Bvwg():
             raise ValidationError(
                 "BvwgRequestEntscheidungsart", ["Undefined", "Beschluss", "Erkenntnis"])
 
-        response = _request({"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "Dokumenttyp[SucheInEntscheidungstexten]": entscheidungstexte, "Dokumenttyp[SucheInRechtssaetzen]": rechtssaetze, "BvwgRequestEntscheidungsart": BvwgRequestEntscheidungsart})
+        arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "BvwgRequestEntscheidungsart": BvwgRequestEntscheidungsart}
+
+        response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
         self.results = _convertResults(response)
 
@@ -75,7 +83,9 @@ class Lvwg():
             raise ValidationError(
                 "LvwgBundesland", ["Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg", "Wien"])
 
-        response = _request({"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "Dokumenttyp[SucheInEntscheidungstexten]": entscheidungstexte, "Dokumenttyp[SucheInRechtssaetzen]": rechtssaetze, "LvwgRequestEntscheidungsart": LvwgRequestEntscheidungsart, "LvwgBundesland": LvwgBundesland})
+        arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "LvwgRequestEntscheidungsart": LvwgRequestEntscheidungsart, "LvwgBundesland": LvwgBundesland}
+
+        response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
 
@@ -101,7 +111,9 @@ class Gbk():
         if GbkDiskriminierungsgrund not in ["Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung", "Mehrfachdiskriminierung"]:
             raise ValidationError("GbkDiskriminierungsgrund", ["Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung", "Mehrfachdiskriminierung"])
 
-        response = _request({"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "Dokumenttyp[SucheInEntscheidungstexten]": entscheidungstexte, "Dokumenttyp[SucheInRechtssaetzen]": rechtssaetze, "GbkRequestEntscheidungsart": GbkRequestEntscheidungsart, "GbkKommission": GbkKommission, "GbkSenat": GbkSenat, "GbkDiskriminierungsgrund": GbkDiskriminierungsgrund})
+        arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "GbkRequestEntscheidungsart": GbkRequestEntscheidungsart, "GbkKommission": GbkKommission, "GbkSenat": GbkSenat, "GbkDiskriminierungsgrund": GbkDiskriminierungsgrund}
+
+        response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
 
@@ -121,7 +133,9 @@ class Dsk():
             raise ValidationError(
                 "DskBehoerde", ["Undefined", "Datenschutzkommission", "Datenschutzbehoerde"])
 
-        response = _request({"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "Dokumenttyp[SucheInEntscheidungstexten]": entscheidungstexte, "Dokumenttyp[SucheInRechtssaetzen]": rechtssaetze, "DskRequestEntscheidungsart": DskRequestEntscheidungsart, "DskBehoerde": DskBehoerde})
+        arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "DskRequestEntscheidungsart": DskRequestEntscheidungsart, "DskBehoerde": DskBehoerde}
+
+        response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
 
@@ -132,8 +146,10 @@ class Dok():
     def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate, published="Undefined", entscheidungstexte=True, rechtssaetze=True):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+        
+        arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
 
-        response = _request({"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "Dokumenttyp[SucheInEntscheidungstexten]": entscheidungstexte, "Dokumenttyp[SucheInRechtssaetzen]": rechtssaetze})
+        response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
 
@@ -149,7 +165,9 @@ class Pvak():
             raise ValidationError(
                 "PvakBehoerde", ["Undefined", "PersonalvertretungsAufsichtskommission", "Personalvertretungsaufsichtsbehoerde"])
 
-        response = _request({"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "Dokumenttyp[SucheInEntscheidungstexten]": entscheidungstexte, "Dokumenttyp[SucheInRechtssaetzen]": rechtssaetze, "PvakBehoerde": PvakBehoerde})
+        arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "PvakBehoerde": PvakBehoerde}
+
+        response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
 
@@ -170,7 +188,7 @@ def _request(parameters):
 
     # If 100 items are found, there may be additional items on the next "page".
     if len(response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"]) == 100:
-        parameters["Seitenzahl"] = parameters["Seitenzahl"] +1
+        parameters["Seitenzahl"] += 1
         results.append(requests(parameters))
 
     return results
@@ -183,4 +201,17 @@ def _sortResults(rawResults: list, sortKey:str, ascending:bool):
     # TODO(PTH) implement sort algorithm
     return rawResults
 
+def _rechtssatzOrEnscheidungstext(arguments:dict, entscheidungstexte:bool, reschtssaetze:bool):
+    """
+    This argument behaves strange.
+    If either parameter is provided, no matter if True or False, only results of this parameter are provided.
+    If both parameters are provided only results of the first one are provided
+    """
+    if entscheidungstexte and reschtssaetze:
+        return arguments
+    if entscheidungstexte and not reschtssaetze:
+        return arguments["Dokumenttyp[SucheInEntscheidungstexten]" : True]
+    if not entscheidungstexte and reschtssaetze:
+        return arguments["Dokumenttyp[SucheInRechtssaetzen]" : True]
+    raise ValueError('"entscheidungstexte" and "reschtssaetze" cannot both be False. Please provide at least one argument as True.')
     

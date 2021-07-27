@@ -4,3 +4,4 @@
 conf.json
 multiresponse.json
 oneresponse.json
+tests/__pycache__
