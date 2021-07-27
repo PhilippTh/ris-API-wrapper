@@ -1,0 +1,6 @@
+.venv
+.vscode
+.pytest_cache
+conf.json
+multiresponse.json
+oneresponse.json
