@@ -5,3 +5,4 @@ conf.json
 multiresponse.json
 oneresponse.json
 tests/__pycache__
+risApiWrapper/__pycache__

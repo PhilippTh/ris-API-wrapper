@@ -1,29 +1,35 @@
 import requests
-import ValidationError
-
 
 class Justiz():
-    def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate, published="Undefined", entscheidungstexte=True, rechtssaetze=True):
+    '''
+    Creates an object containing a list of queried cases by civil or criminal courts.
+    '''
+    def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
-        
+            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
+                
         arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
         
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
-        self.results = _convertResults(response)
+        self._results = _convertResults(response)
 
-    def info(self, sortKey="caseNumber", ascending=False):
-        return _sortResults(self.results)
+    def info(self, sortKey="", ascending=False) -> list:
+        '''
+        Retruns a list of queried results.
+        '''
+        if sortKey:
+            return _sortResults(self._results, sortKey=sortKey, ascending=ascending)
+        else:
+            return self._results
 
 class Vfgh():
-    def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate, published="Undefined", entscheidungstexte=True, rechtssaetze=True, VfghRequestEntscheidungsart="Undefined"):
+    def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, VfghRequestEntscheidungsart="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
 
         if VfghRequestEntscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis", "Vergleich"]:
-            raise ValidationError(
-                "VfghRequestEntscheidungsart", ["Undefined", "Beschluss", "Erkenntnis", "Vergleich"])
+            raise ValueError('Please provide a valid argument for "VfghRequestEntscheidungsart". The API accepts "Undefined", "Beschluss", "Erkenntnis"or "Vergleich".')
 
         arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "VfghRequestEntscheidungsart": VfghRequestEntscheidungsart}
 
@@ -31,17 +37,22 @@ class Vfgh():
         
         self.results = _convertResults(response)
 
-    def info(self, sortKey="caseNumber", ascending=False):
-        return _sortResults(self.results)
+    def info(self, sortKey="", ascending=False) -> list:
+        '''
+        Retruns a sorted list of queried results.
+        '''
+        if sortKey:
+            return _sortResults(self._results, sortKey=sortKey, ascending=ascending)
+        else:
+            return self._results
 
 class Vwgh():
-    def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate, published="Undefined", entscheidungstexte=True, rechtssaetze=True, VwghRequestEntscheidungsart="Undefined"):
+    def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, VwghRequestEntscheidungsart="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
 
         if VwghRequestEntscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis", "BeschlussVS", "ErkenntnisVS"]:
-            raise ValidationError(
-                "VwghRequestEntscheidungsart", ["Undefined", "Beschluss", "Erkenntnis", "BeschlussVS", "ErkenntnisVS"])
+            raise ValueError('Please provide a valid argument for "VwghRequestEntscheidungsart". The API accepts "Undefined", "Beschluss", "Erkenntnis", "BeschlussVS" or "ErkenntnisVS".')
 
         arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "VwghRequestEntscheidungsart": VwghRequestEntscheidungsart}
 
@@ -49,17 +60,22 @@ class Vwgh():
 
         self.results = _convertResults(response)
 
-    def info(self, sortKey="caseNumber", ascending=False):
-        return _sortResults(self.results)
+    def info(self, sortKey="", ascending=False) -> list:
+        '''
+        Retruns a sorted list of queried results.
+        '''
+        if sortKey:
+            return _sortResults(self._results, sortKey=sortKey, ascending=ascending)
+        else:
+            return self._results
 
 class Bvwg():
-    def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate, published="Undefined", entscheidungstexte=True, rechtssaetze=True, BvwgRequestEntscheidungsart="Undefined"):
+    def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, BvwgRequestEntscheidungsart="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
 
         if BvwgRequestEntscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis"]:
-            raise ValidationError(
-                "BvwgRequestEntscheidungsart", ["Undefined", "Beschluss", "Erkenntnis"])
+            raise ValueError('Please provide a valid argument for "BvwgRequestEntscheidungsart". The API accepts "Undefined", "Beschluss" or "Erkenntnis".')
 
         arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "BvwgRequestEntscheidungsart": BvwgRequestEntscheidungsart}
 
@@ -67,21 +83,25 @@ class Bvwg():
         
         self.results = _convertResults(response)
 
-    def info(self, sortKey="caseNumber", ascending=False):
-        return _sortResults(self.results)
+    def info(self, sortKey="", ascending=False) -> list:
+        '''
+        Retruns a sorted list of queried results.
+        '''
+        if sortKey:
+            return _sortResults(self._results, sortKey=sortKey, ascending=ascending)
+        else:
+            return self._results
 
 class Lvwg():
-    def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate,  published="Undefined", entscheidungstexte=True, rechtssaetze=True, LvwgRequestEntscheidungsart="Undefined", LvwgBundesland="Undefined"):
+    def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None,  published="Undefined", entscheidungstexte=True, rechtssaetze=True, LvwgRequestEntscheidungsart="Undefined", LvwgBundesland="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
 
         if LvwgRequestEntscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis", "Bescheid"]:
-            raise ValidationError(
-                "LvwgRequestEntscheidungsart", ["Undefined", "Beschluss", "Erkenntnis", "Bescheid"])
+            raise ValueError('Please provide a valid argument for "LvwgRequestEntscheidungsart". The API accepts "Undefined", "Beschluss", "Erkenntnis" or "Bescheid".')
 
         if LvwgBundesland not in ["Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg", "Wien"]:
-            raise ValidationError(
-                "LvwgBundesland", ["Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg", "Wien"])
+            raise ValueError('Please provide a valid argument for "LvwgBundesland". The API accepts "Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg" or "Wien".')
 
         arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "LvwgRequestEntscheidungsart": LvwgRequestEntscheidungsart, "LvwgBundesland": LvwgBundesland}
 
@@ -89,27 +109,31 @@ class Lvwg():
 
         self.results = _convertResults(response)
 
-    def info(self, sortKey="caseNumber", ascending=False):
-        return _sortResults(self.results)
+    def info(self, sortKey="", ascending=False) -> list:
+        '''
+        Retruns a sorted list of queried results.
+        '''
+        if sortKey:
+            return _sortResults(self._results, sortKey=sortKey, ascending=ascending)
+        else:
+            return self._results
 
 class Gbk():
-    def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate, published="Undefined", entscheidungstexte=True, rechtssaetze=True, GbkRequestEntscheidungsart="Undefined", GbkKommission="Undefined", GbkSenat="Undefined", GbkDiskriminierungsgrund="Undefined"):
+    def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, GbkRequestEntscheidungsart="Undefined", GbkKommission="Undefined", GbkSenat="Undefined", GbkDiskriminierungsgrund="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
 
         if GbkRequestEntscheidungsart not in ["Undefined", "Einzelfallpruefungsergebnis", "Gutachten"]:
-            raise ValidationError(
-                "GbkRequestEntscheidungsart", ["Undefined", "Einzelfallpruefungsergebnis", "Gutachten"])
+            raise ValueError('Please provide a valid argument for "GbkRequestEntscheidungsart". The API accepts "Undefined", "Einzelfallpruefungsergebnis" or "Gutachten".')
 
         if GbkKommission not in ["Undefined", "BundesGleichbehandlungskommission", "Gleichbehandlungskommission"]:
-            raise ValidationError(
-                "GbkKommission", ["Undefined", "BundesGleichbehandlungskommission", "Gleichbehandlungskommission"])
+            raise ValueError('Please provide a valid argument for "GbkKommission". The API accepts "Undefined", "BundesGleichbehandlungskommission" or "Gleichbehandlungskommission".')
 
         if GbkSenat not in ["Undefined", "I", "II", "III"]:
-            raise ValidationError("GbkSenat", ["Undefined", "I", "II", "III"])
+            raise ValueError('Please provide a valid argument for "GbkSenat". The API accepts "Undefined", "I", "II" or "III".')
 
         if GbkDiskriminierungsgrund not in ["Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung", "Mehrfachdiskriminierung"]:
-            raise ValidationError("GbkDiskriminierungsgrund", ["Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung", "Mehrfachdiskriminierung"])
+            raise ValueError('Please provide a valid argument for "GbkDiskriminierungsgrund". The API accepts "Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung" or "Mehrfachdiskriminierung".')
 
         arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "GbkRequestEntscheidungsart": GbkRequestEntscheidungsart, "GbkKommission": GbkKommission, "GbkSenat": GbkSenat, "GbkDiskriminierungsgrund": GbkDiskriminierungsgrund}
 
@@ -117,21 +141,25 @@ class Gbk():
 
         self.results = _convertResults(response)
 
-    def info(self, sortKey="caseNumber", ascending=False):
-        return _sortResults(self.results)
+    def info(self, sortKey="", ascending=False) -> list:
+        '''
+        Retruns a sorted list of queried results.
+        '''
+        if sortKey:
+            return _sortResults(self._results, sortKey=sortKey, ascending=ascending)
+        else:
+            return self._results
 
 class Dsk():
-    def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate, published="Undefined", entscheidungstexte=True, rechtssaetze=True, DskRequestEntscheidungsart="Undefined", DskBehoerde="Undefined"):
+    def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, DskRequestEntscheidungsart="Undefined", DskBehoerde="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
 
         if DskRequestEntscheidungsart not in ["Undefined", "BescheidBeschwerde", "BescheidInternatDatenverkehr", "BescheidRegistrierung", "Bescheid__46_47_DSG_2000", "BescheidSonstiger", "Empfehlung", "Verfahrensschriftsaetze"]:
-            raise ValidationError(
-                "DskRequestEntscheidungsart", ["Undefined", "BescheidBeschwerde", "BescheidInternatDatenverkehr", "BescheidRegistrierung", "Bescheid__46_47_DSG_2000", "BescheidSonstiger", "Empfehlung", "Verfahrensschriftsaetze"])
+            raise ValueError('Please provide a valid argument for "DskRequestEntscheidungsart". The API accepts "Undefined", "BescheidBeschwerde", "BescheidInternatDatenverkehr", "BescheidRegistrierung", "Bescheid__46_47_DSG_2000", "BescheidSonstiger", "Empfehlung" or "Verfahrensschriftsaetze".')
 
         if DskBehoerde not in ["Undefined", "Datenschutzkommission", "Datenschutzbehoerde"]:
-            raise ValidationError(
-                "DskBehoerde", ["Undefined", "Datenschutzkommission", "Datenschutzbehoerde"])
+            raise ValueError('Please provide a valid argument for "DskBehoerde". The API accepts "Undefined", "Datenschutzkommission" or "Datenschutzbehoerde".')
 
         arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "DskRequestEntscheidungsart": DskRequestEntscheidungsart, "DskBehoerde": DskBehoerde}
 
@@ -139,13 +167,19 @@ class Dsk():
 
         self.results = _convertResults(response)
 
-    def info(self, sortKey="caseNumber", ascending=False):
-        return _sortResults(self.results)
+    def info(self, sortKey="", ascending=False) -> list:
+        '''
+        Retruns a sorted list of queried results.
+        '''
+        if sortKey:
+            return _sortResults(self._results, sortKey=sortKey, ascending=ascending)
+        else:
+            return self._results
 
 class Dok():
-    def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate, published="Undefined", entscheidungstexte=True, rechtssaetze=True):
+    def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
         
         arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
 
@@ -153,17 +187,22 @@ class Dok():
 
         self.results = _convertResults(response)
 
-    def info(self, sortKey="caseNumber", ascending=False):
-        return _sortResults(self.results)
+    def info(self, sortKey="", ascending=False) -> list:
+        '''
+        Retruns a sorted list of queried results.
+        '''
+        if sortKey:
+            return _sortResults(self._results, sortKey=sortKey, ascending=ascending)
+        else:
+            return self._results
 
 class Pvak():
-    def __init__(self, keywords: str, caseNumber: str, legalNorm: str, fromDate, toDate, published="Undefined", entscheidungstexte=True, rechtssaetze=True, PvakBehoerde="Undefined"):
+    def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, PvakBehoerde="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValidationError("published", ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
 
         if PvakBehoerde not in ["Undefined", "PersonalvertretungsAufsichtskommission", "Personalvertretungsaufsichtsbehoerde"]:
-            raise ValidationError(
-                "PvakBehoerde", ["Undefined", "PersonalvertretungsAufsichtskommission", "Personalvertretungsaufsichtsbehoerde"])
+            raise ValueError('Please provide a valid argument for "PvakBehoerde". The API accepts "Undefined", "PersonalvertretungsAufsichtskommission" or "Personalvertretungsaufsichtsbehoerde".')
 
         arguments = {"Suchworte": keywords, "Geschaeftszahl": caseNumber, "Norm": legalNorm, "EntscheidungsdatumVon": fromDate, "EntscheidungsdatumBis": toDate,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "PvakBehoerde": PvakBehoerde}
 
@@ -171,11 +210,17 @@ class Pvak():
 
         self.results = _convertResults(response)
 
-    def info(self, sortKey="caseNumber", ascending=False):
-        return _sortResults(self.results)
+    def info(self, sortKey="", ascending=False) -> list:
+        '''
+        Retruns a sorted list of queried results.
+        '''
+        if sortKey:
+            return _sortResults(self._results, sortKey=sortKey, ascending=ascending)
+        else:
+            return self._results
 
 
-def _request(parameters):
+def _request(parameters) -> list:
     response = requests.get("https://data.bka.gv.at/ris/api/v2.5/judikatur", params=parameters).json()
 
     # Return nothing if no items are found
@@ -188,20 +233,99 @@ def _request(parameters):
 
     # If 100 items are found, there may be additional items on the next "page".
     if len(response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"]) == 100:
-        parameters["Seitenzahl"] += 1
-        results.append(requests(parameters))
+        parameters["Seitennummer"] += 1
+        results.append(_request(parameters))
 
     return results
 
-def _convertResults(rawResults: list):
-    # TODO(PTH) convert data 
-    return rawResults
+def _convertResults(rawResults: list) -> list:
+    convertedResults = []
+    for rawCase in rawResults:
+        convertedCase ={}
+        if rawCase["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Rechtssatz":
+            pass
+            convertedCase["type"] = "Rechtssatz"
+            # TODO(PTH) incorporate rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"] for rechtssätze
+            try:
+                # Sometimes multiple Rechtssatznummer are assigned. This data field should therefore always be a list.
+                convertedCase["Rechtssatznummer"] = _toList([rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Rechtssatznummern"]["item"]])
+            except KeyError:
+                convertedCase["Rechtssatznummer"] = None
 
-def _sortResults(rawResults: list, sortKey:str, ascending:bool):
-    # TODO(PTH) implement sort algorithm
-    return rawResults
+        elif rawCase["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Text":
+            convertedCase["type"] = "Entscheidungstext"
 
-def _rechtssatzOrEnscheidungstext(arguments:dict, entscheidungstexte:bool, reschtssaetze:bool):
+        else:
+            # This should never be the case!
+            convertedCase["type"] = None
+
+        try:
+            # Sometimes multiple caseNumber are assigned. This data field should therefore always be a list.
+            convertedCase["caseNumber"] = _toList(rawCase["Data"]["Metadaten"]["Judikatur"]["Geschaeftszahl"]["item"])
+        except KeyError:
+            convertedCase["caseNumber"] = None
+
+        try:
+            # Sometimes multiple europeanCaseLawIdentifier are assigned. This data field should therefore always be a list.
+            convertedCase["europeanCaseLawIdentifier"] = _toList(rawCase["Data"]["Metadaten"]["Judikatur"]["EuropeanCaseLawIdentifier"])
+        except KeyError:
+            convertedCase["caseNumber"] = None
+
+        try:
+            convertedCase["judicialBody"] = rawCase["Data"]["Metadaten"]["Technisch"]["Organ"]
+        except KeyError:
+            convertedCase["judicialBody"] = None
+
+        try:
+            convertedCase["decisionDate"] = rawCase["Data"]["Metadaten"]["Judikatur"]["Entscheidungsdatum"]
+        except KeyError:
+            convertedCase["decisionDate"] = None
+
+        try:
+            # Sometimes multiple europeanCaseLawIdentifier are assigned. This data field should therefore always be list.
+            convertedCase["published"] = _toList(rawCase["Data"]["Metadaten"]["Allgemein"]["Veroeffentlicht"])
+        except KeyError:
+            convertedCase["published"] = None
+
+        try:
+            convertedCase["edited"] = rawCase["Data"]["Metadaten"]["Allgemein"]["Geaendert"]
+        except KeyError:
+            convertedCase["edited"] = None
+
+        try:
+            # Sometimes multiple europeanCaseLawIdentifier are assigned. This data field should therefore always be a list.
+            convertedCase["legalNorms"] = _toList(rawCase["Data"]["Metadaten"]["Judikatur"]["Normen"]["item"])
+        except KeyError:
+            convertedCase["legalNorms"] = None
+
+        try:
+            convertedCase["dokumentUrl"] = rawCase["Data"]["Metadaten"]["Allgemein"]["DokumentUrl"]
+        except KeyError:
+            convertedCase["dokumentUrl"] = None
+
+        try:
+            convertedCase["contentUrls"] =  {}
+            for url in rawCase["Data"]["Dokumentliste"]["ContentReference"]["Urls"]["ContentUrl"]:
+                convertedCase["contentUrls"][url["DataType"]] = url["Url"]
+        except KeyError:
+            convertedCase["contentUrls"] = None
+
+        convertedResults.append(convertedCase)
+
+    return convertedResults
+
+def _toList(data) -> list:
+    return [data] if isinstance(data, str) else data
+
+def _sortResults(rawResults: list, sortKey: str, ascending: bool) -> list:
+    if sortKey not in []:
+        #TODO(PTH) define ValueError
+        raise ValueError()
+    else:
+        # TODO(PTH) implement sort algorithm
+        return rawResults
+
+def _rechtssatzOrEnscheidungstext(arguments:dict, entscheidungstexte:bool, reschtssaetze:bool) -> dict:
     '''
     "Dokumenttyp[SucheInRechtssaetzen]" and "Dokumenttyp[SucheInEntscheidungstexten]" behave strange.
     If either parameter is provided, no matter if True or False, only results of this class are provided.
@@ -210,7 +334,9 @@ def _rechtssatzOrEnscheidungstext(arguments:dict, entscheidungstexte:bool, resch
     if entscheidungstexte and reschtssaetze:
         return arguments
     if entscheidungstexte and not reschtssaetze:
-        return arguments["Dokumenttyp[SucheInEntscheidungstexten]" : True]
+        arguments["Dokumenttyp[SucheInEntscheidungstexten]"] = [True]
+        return arguments
     if not entscheidungstexte and reschtssaetze:
-        return arguments["Dokumenttyp[SucheInRechtssaetzen]" : True]
+        arguments["Dokumenttyp[SucheInRechtssaetzen]"] = [True]
+        return arguments
     raise ValueError('"entscheidungstexte" and "reschtssaetze" cannot both be False. Please provide at least one argument as True.')
