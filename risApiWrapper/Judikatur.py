@@ -1,8 +1,10 @@
 import requests
+from dataclasses import dataclass
 
+@dataclass
 class Justiz():
     '''
-    Creates an object containing a list of queried cases by civil or criminal courts.
+    Creates an iterable object representing a list of queried cases by civil or criminal courts.
     '''
     def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
@@ -13,6 +15,18 @@ class Justiz():
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self._results = _convertResults(response)
+    
+    def __iter__(self):
+        return iter(self._results)
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sortKey="", ascending=False) -> None:
+        '''
+        Sorts the queried results.
+        '''
+        _sortResults(self._results)
 
     def info(self, sortKey="", ascending=False) -> list:
         '''
@@ -23,7 +37,11 @@ class Justiz():
         else:
             return self._results
 
+@dataclass
 class Vfgh():
+    '''
+    Creates an iterable object representing a list of queried cases by the constitutional court.
+    '''
     def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, VfghRequestEntscheidungsart="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
@@ -37,6 +55,18 @@ class Vfgh():
         
         self.results = _convertResults(response)
 
+    def __iter__(self):
+        return iter(self._results)
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sortKey="", ascending=False) -> None:
+        '''
+        Sorts the queried results.
+        '''
+        _sortResults(self._results)
+
     def info(self, sortKey="", ascending=False) -> list:
         '''
         Retruns a sorted list of queried results.
@@ -46,7 +76,11 @@ class Vfgh():
         else:
             return self._results
 
+@dataclass
 class Vwgh():
+    '''
+    Creates an iterable object representing a list of queried cases by the high administrative court.
+    '''
     def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, VwghRequestEntscheidungsart="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
@@ -59,6 +93,18 @@ class Vwgh():
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
+    
+    def __iter__(self):
+        return iter(self._results)
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sortKey="", ascending=False) -> None:
+        '''
+        Sorts the queried results.
+        '''
+        _sortResults(self._results)
 
     def info(self, sortKey="", ascending=False) -> list:
         '''
@@ -69,7 +115,11 @@ class Vwgh():
         else:
             return self._results
 
+@dataclass
 class Bvwg():
+    '''
+    Creates an iterable object representing a list of queried cases by the state administrative court.
+    '''
     def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, BvwgRequestEntscheidungsart="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
@@ -82,6 +132,18 @@ class Bvwg():
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
         self.results = _convertResults(response)
+    
+    def __iter__(self):
+        return iter(self._results)
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sortKey="", ascending=False) -> None:
+        '''
+        Sorts the queried results.
+        '''
+        _sortResults(self._results)
 
     def info(self, sortKey="", ascending=False) -> list:
         '''
@@ -92,7 +154,11 @@ class Bvwg():
         else:
             return self._results
 
+@dataclass
 class Lvwg():
+    '''
+    Creates an iterable object representing a list of queried cases by regional administrative courts.
+    '''
     def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None,  published="Undefined", entscheidungstexte=True, rechtssaetze=True, LvwgRequestEntscheidungsart="Undefined", LvwgBundesland="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
@@ -109,6 +175,18 @@ class Lvwg():
 
         self.results = _convertResults(response)
 
+    def __iter__(self):
+        return iter(self._results)
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sortKey="", ascending=False) -> None:
+        '''
+        Sorts the queried results.
+        '''
+        _sortResults(self._results)
+
     def info(self, sortKey="", ascending=False) -> list:
         '''
         Retruns a sorted list of queried results.
@@ -118,7 +196,11 @@ class Lvwg():
         else:
             return self._results
 
+@dataclass
 class Gbk():
+    '''
+    Creates an iterable object representing a list of queried cases by the "Gleichbehandlungskommission".
+    '''
     def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, GbkRequestEntscheidungsart="Undefined", GbkKommission="Undefined", GbkSenat="Undefined", GbkDiskriminierungsgrund="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
@@ -140,6 +222,18 @@ class Gbk():
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
+    
+    def __iter__(self):
+        return iter(tuple(self._results))
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sortKey="", ascending=False) -> None:
+        '''
+        Sorts the queried results.
+        '''
+        _sortResults(self._results)
 
     def info(self, sortKey="", ascending=False) -> list:
         '''
@@ -150,7 +244,11 @@ class Gbk():
         else:
             return self._results
 
+@dataclass
 class Dsk():
+    '''
+    Creates an iterable object representing a list of queried cases by the data protecton authority.
+    '''
     def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, DskRequestEntscheidungsart="Undefined", DskBehoerde="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
@@ -166,6 +264,18 @@ class Dsk():
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
+    
+    def __iter__(self):
+        return iter(self._results)
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sortKey="", ascending=False) -> None:
+        '''
+        Sorts the queried results.
+        '''
+        _sortResults(self._results)
 
     def info(self, sortKey="", ascending=False) -> list:
         '''
@@ -176,7 +286,11 @@ class Dsk():
         else:
             return self._results
 
+@dataclass
 class Dok():
+    '''
+    Creates an iterable object representing a list of queried cases by the "Disziplinarkommission".
+    '''
     def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
@@ -186,6 +300,18 @@ class Dok():
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
+    
+    def __iter__(self):
+        return iter(self._results)
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sortKey="", ascending=False) -> None:
+        '''
+        Sorts the queried results.
+        '''
+        _sortResults(self._results)
 
     def info(self, sortKey="", ascending=False) -> list:
         '''
@@ -196,7 +322,11 @@ class Dok():
         else:
             return self._results
 
+@dataclass
 class Pvak():
+    '''
+    Creates an iterable object representing a list of queried cases by the "Personalvertretungsaufsichtsbehörde".
+    '''
     def __init__(self, keywords=None, caseNumber=None, legalNorm=None, fromDate=None, toDate=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, PvakBehoerde="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
@@ -209,6 +339,18 @@ class Pvak():
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self.results = _convertResults(response)
+    
+    def __iter__(self):
+        return iter(self._results)
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sortKey="", ascending=False) -> None:
+        '''
+        Sorts the queried results.
+        '''
+        _sortResults(self._results)
 
     def info(self, sortKey="", ascending=False) -> list:
         '''
@@ -248,9 +390,9 @@ def _convertResults(rawResults: list) -> list:
             # TODO(PTH) incorporate rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"] for rechtssätze
             try:
                 # Sometimes multiple Rechtssatznummer are assigned. This data field should therefore always be a list.
-                convertedCase["Rechtssatznummer"] = _toList([rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Rechtssatznummern"]["item"]])
+                convertedCase["rechtssatznummer"] = _toList([rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Rechtssatznummern"]["item"]])
             except KeyError:
-                convertedCase["Rechtssatznummer"] = None
+                convertedCase["rechtssatznummer"] = None
 
         elif rawCase["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Text":
             convertedCase["type"] = "Entscheidungstext"
@@ -269,7 +411,7 @@ def _convertResults(rawResults: list) -> list:
             # Sometimes multiple europeanCaseLawIdentifier are assigned. This data field should therefore always be a list.
             convertedCase["europeanCaseLawIdentifier"] = _toList(rawCase["Data"]["Metadaten"]["Judikatur"]["EuropeanCaseLawIdentifier"])
         except KeyError:
-            convertedCase["caseNumber"] = None
+            convertedCase["europeanCaseLawIdentifier"] = None
 
         try:
             convertedCase["judicialBody"] = rawCase["Data"]["Metadaten"]["Technisch"]["Organ"]
@@ -318,11 +460,10 @@ def _toList(data) -> list:
     return [data] if isinstance(data, str) else data
 
 def _sortResults(rawResults: list, sortKey: str, ascending: bool) -> list:
-    if sortKey not in []:
-        #TODO(PTH) define ValueError
-        raise ValueError()
+    if sortKey not in ["type", "caseNumber", "europeanCaseLawIdentifier", "Rechtssatznummer", "judicialBody", "decisionDate", "published", "published", "edited"]:
+        raise ValueError('Please provide a valid argument for "sortKey". The results can be sorted by "type", "caseNumber", "europeanCaseLawIdentifier", "Rechtssatznummer", "judicialBody", "decisionDate", "published", "published" or "edited".')
     else:
-        # TODO(PTH) implement sort algorithm
+        # TODO(PTH) implement sort algorithm; check to make rechtssatznummer work; problems with dates?; many fields can be lists
         return rawResults
 
 def _rechtssatzOrEnscheidungstext(arguments:dict, entscheidungstexte:bool, reschtssaetze:bool) -> dict:
