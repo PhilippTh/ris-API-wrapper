@@ -11,7 +11,7 @@ def testJustizEntscheidungstext():
         assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert "5Ob234/20b" in item["caseNumber"], "checks whether the wanted case number is found"
         assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entschiedungstext'"
-        assert item.keys() >= {"type", "caseNumber", "europeanCaseLawIdentifier", "judicialBody", "decisionDate", "published", "edited", "legalNorms", "dokumentUrl", "contentUrls"}, "checks whether an item has all desired  fields"
+        assert item.keys() == {"type", "caseNumber", "europeanCaseLawIdentifier", "judicialBody", "decisionDate", "published", "edited", "legalNorms", "documentUrl", "contentUrls"}, "checks whether an item has all desired  fields"
 
 def testJustizRechtssatz():
     """Test an API call to get a Rechtssatz"""
@@ -20,10 +20,9 @@ def testJustizRechtssatz():
     response = wrapperInstance.info()
 
     assert isinstance(response, list)
-    assert isinstance(response[0], dict)
     for item in wrapperInstance:
         assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert "5Ob234/20b" in item["caseNumber"], "checks whether the wanted case number is found"
         assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
-        assert item.keys() >= {"type", "caseNumber", "europeanCaseLawIdentifier", "judicialBody", "decisionDate", "published", "edited", "legalNorms", "dokumentUrl", "contentUrls"}, "checks whether an item has all desired  fields"
+        assert item.keys() == {"type", "rechtssatznummer", "decisions", "caseNumber", "europeanCaseLawIdentifier", "judicialBody", "decisionDate", "published", "edited", "legalNorms", "documentUrl", "contentUrls"}, "checks whether an item has all desired  fields"
 

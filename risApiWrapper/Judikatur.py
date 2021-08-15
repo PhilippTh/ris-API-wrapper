@@ -385,7 +385,6 @@ def _convertResults(rawResults: list) -> list:
     for rawCase in rawResults:
         convertedCase ={}
         if rawCase["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Rechtssatz":
-            pass
             convertedCase["type"] = "Rechtssatz"
             # TODO(PTH) incorporate rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"] for rechtssätze
             try:
@@ -393,6 +392,18 @@ def _convertResults(rawResults: list) -> list:
                 convertedCase["rechtssatznummer"] = _toList([rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Rechtssatznummern"]["item"]])
             except KeyError:
                 convertedCase["rechtssatznummer"] = None
+            try:
+                convertedCase["decisions"] =[]
+                if isinstance(rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"], list):
+                    for decision in rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]:
+                        convertedCase["decisions"].append({"caseNumber" : decision["Geschaeftszahl"], "judicialBody" : decision["Gericht"], "decisionDate" : decision["Entscheidungsdatum"], "documentUrl" : decision["DokumentUrl"]})
+                else:
+                    convertedCase["decisions"].append({"caseNumber" : rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["Geschaeftszahl"], 
+                    "judicialBody" : rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["Gericht"], 
+                    "decisionDate" : rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["Entscheidungsdatum"], 
+                    "documentUrl" : rawCase["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["DokumentUrl"]})
+            except KeyError:
+                convertedCase["decisions"] = None
 
         elif rawCase["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Text":
             convertedCase["type"] = "Entscheidungstext"
@@ -424,8 +435,7 @@ def _convertResults(rawResults: list) -> list:
             convertedCase["decisionDate"] = None
 
         try:
-            # Sometimes multiple europeanCaseLawIdentifier are assigned. This data field should therefore always be list.
-            convertedCase["published"] = _toList(rawCase["Data"]["Metadaten"]["Allgemein"]["Veroeffentlicht"])
+            convertedCase["published"] = rawCase["Data"]["Metadaten"]["Allgemein"]["Veroeffentlicht"]
         except KeyError:
             convertedCase["published"] = None
 
@@ -441,9 +451,9 @@ def _convertResults(rawResults: list) -> list:
             convertedCase["legalNorms"] = None
 
         try:
-            convertedCase["dokumentUrl"] = rawCase["Data"]["Metadaten"]["Allgemein"]["DokumentUrl"]
+            convertedCase["documentUrl"] = rawCase["Data"]["Metadaten"]["Allgemein"]["DokumentUrl"]
         except KeyError:
-            convertedCase["dokumentUrl"] = None
+            convertedCase["documentUrl"] = None
 
         try:
             convertedCase["contentUrls"] =  {}
@@ -463,7 +473,7 @@ def _sortResults(rawResults: list, sortKey: str, ascending: bool) -> list:
     if sortKey not in ["type", "caseNumber", "europeanCaseLawIdentifier", "Rechtssatznummer", "judicialBody", "decisionDate", "published", "published", "edited"]:
         raise ValueError('Please provide a valid argument for "sortKey". The results can be sorted by "type", "caseNumber", "europeanCaseLawIdentifier", "Rechtssatznummer", "judicialBody", "decisionDate", "published", "published" or "edited".')
     else:
-        # TODO(PTH) implement sort algorithm; check to make rechtssatznummer work; problems with dates?; many fields can be lists
+        # TODO(PTH) implement sort algorithm; check to make rechtssatznummer work; many fields can be lists
         return rawResults
 
 def _rechtssatzOrEnscheidungstext(arguments:dict, entscheidungstexte:bool, reschtssaetze:bool) -> dict:
