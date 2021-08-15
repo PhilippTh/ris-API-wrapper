@@ -53,7 +53,7 @@ class Vfgh():
 
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
-        self.results = _convertResults(response)
+        self._results = _convertResults(response)
 
     def __iter__(self):
         return iter(self._results)
@@ -92,7 +92,7 @@ class Vwgh():
 
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
-        self.results = _convertResults(response)
+        self._results = _convertResults(response)
     
     def __iter__(self):
         return iter(self._results)
@@ -131,7 +131,7 @@ class Bvwg():
 
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
-        self.results = _convertResults(response)
+        self._results = _convertResults(response)
     
     def __iter__(self):
         return iter(self._results)
@@ -173,7 +173,7 @@ class Lvwg():
 
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
-        self.results = _convertResults(response)
+        self._results = _convertResults(response)
 
     def __iter__(self):
         return iter(self._results)
@@ -221,7 +221,7 @@ class Gbk():
 
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
-        self.results = _convertResults(response)
+        self._results = _convertResults(response)
     
     def __iter__(self):
         return iter(tuple(self._results))
@@ -263,7 +263,7 @@ class Dsk():
 
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
-        self.results = _convertResults(response)
+        self._results = _convertResults(response)
     
     def __iter__(self):
         return iter(self._results)
@@ -299,7 +299,7 @@ class Dok():
 
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
-        self.results = _convertResults(response)
+        self._results = _convertResults(response)
     
     def __iter__(self):
         return iter(self._results)
@@ -338,7 +338,7 @@ class Pvak():
 
         response = _request(_rechtssatzOrEnscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
-        self.results = _convertResults(response)
+        self._results = _convertResults(response)
     
     def __iter__(self):
         return iter(self._results)
