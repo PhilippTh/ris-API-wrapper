@@ -10,7 +10,7 @@ class Justiz():
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
                 
-        arguments = {"Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
+        arguments = {"Applikation": "Justiz", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
         
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
@@ -49,7 +49,7 @@ class Vfgh():
         if vfgh_entscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis", "Vergleich"]:
             raise ValueError('Please provide a valid argument for "vfgh_entscheidungsart". The API accepts "Undefined", "Beschluss", "Erkenntnis"or "Vergleich".')
 
-        arguments = {"Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "VfghRequestEntscheidungsart": vfgh_entscheidungsart}
+        arguments = {"Applikation": "Vfgh", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "VfghRequestEntscheidungsart": vfgh_entscheidungsart}
 
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
@@ -88,7 +88,7 @@ class Vwgh():
         if vwgh_entscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis", "BeschlussVS", "ErkenntnisVS"]:
             raise ValueError('Please provide a valid argument for "vwgh_entscheidungsart". The API accepts "Undefined", "Beschluss", "Erkenntnis", "BeschlussVS" or "ErkenntnisVS".')
 
-        arguments = {"Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "VwghRequestEntscheidungsart": vwgh_entscheidungsart}
+        arguments = {"Applikation": "Vwgh", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "VwghRequestEntscheidungsart": vwgh_entscheidungsart}
 
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
@@ -127,7 +127,7 @@ class Bvwg():
         if bvwg_entscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis"]:
             raise ValueError('Please provide a valid argument for "bvwg_entscheidungsart". The API accepts "Undefined", "Beschluss" or "Erkenntnis".')
 
-        arguments = {"Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "BvwgRequestEntscheidungsart": bvwg_entscheidungsart}
+        arguments = {"Applikation": "Bvwg", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "BvwgRequestEntscheidungsart": bvwg_entscheidungsart}
 
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
@@ -169,7 +169,7 @@ class Lvwg():
         if lvwg_bundesland not in ["Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg", "Wien"]:
             raise ValueError('Please provide a valid argument for "lvwg_bundesland". The API accepts "Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg" or "Wien".')
 
-        arguments = {"Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "LvwgRequestEntscheidungsart": lvwg_entscheidungsart, "LvwgBundesland": lvwg_bundesland}
+        arguments = {"Applikation": "Lvwg", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "LvwgRequestEntscheidungsart": lvwg_entscheidungsart, "LvwgBundesland": lvwg_bundesland}
 
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
@@ -217,7 +217,7 @@ class Gbk():
         if gbk_diskriminierungsgrund not in ["Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung", "Mehrfachdiskriminierung"]:
             raise ValueError('Please provide a valid argument for "gbk_diskriminierungsgrund". The API accepts "Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung" or "Mehrfachdiskriminierung".')
 
-        arguments = {"Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "GbkRequestEntscheidungsart": gbk_entscheidungsart, "GbkKommission": gbk_kommission, "GbkSenat": gbk_senat, "GbkDiskriminierungsgrund": gbk_diskriminierungsgrund}
+        arguments = {"Applikation": "Gbk", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "GbkRequestEntscheidungsart": gbk_entscheidungsart, "GbkKommission": gbk_kommission, "GbkSenat": gbk_senat, "GbkDiskriminierungsgrund": gbk_diskriminierungsgrund}
 
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
@@ -259,7 +259,7 @@ class Dsk():
         if dsk_behoerde not in ["Undefined", "Datenschutzkommission", "Datenschutzbehoerde"]:
             raise ValueError('Please provide a valid argument for "dsk_behoerde". The API accepts "Undefined", "Datenschutzkommission" or "Datenschutzbehoerde".')
 
-        arguments = {"Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "DskRequestEntscheidungsart": dsk_entscheidungsart, "DskBehoerde": dsk_behoerde}
+        arguments = {"Applikation": "Dsk", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "DskRequestEntscheidungsart": dsk_entscheidungsart, "DskBehoerde": dsk_behoerde}
 
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
@@ -295,7 +295,7 @@ class Dok():
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
         
-        arguments = {"Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
+        arguments = {"Applikation": "Dok", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
 
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
@@ -334,7 +334,7 @@ class Pvak():
         if pvak_behoerde not in ["Undefined", "PersonalvertretungsAufsichtskommission", "Personalvertretungsaufsichtsbehoerde"]:
             raise ValueError('Please provide a valid argument for "pvak_behoerde". The API accepts "Undefined", "PersonalvertretungsAufsichtskommission" or "Personalvertretungsaufsichtsbehoerde".')
 
-        arguments = {"Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "PvakBehoerde": pvak_behoerde}
+        arguments = {"Applikation": "Pvak", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "PvakBehoerde": pvak_behoerde}
 
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
@@ -472,9 +472,11 @@ def _to_list(data) -> list:
 def _sort_results(raw_results: list, sort_key: str, ascending: bool) -> list:
     if sort_key not in ["type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "published", "edited"]:
         raise ValueError('Please provide a valid argument for "sort_key". The results can be sorted by "type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "published" or "edited".')
+    # TODO(PTH) implement sort algorithm; check to make rechtssatz_number work; many fields can be lists
+    if ascending:
+        return raw_results.sort(key=lambda item: item[sort_key], reverse=True)
     else:
-        # TODO(PTH) implement sort algorithm; check to make rechtssatz_number work; many fields can be lists
-        return raw_results
+        return raw_results.sort(key=lambda item: item[sort_key], reverse=False)
 
 def _rechtssatz_or_enscheidungstext(arguments:dict, entscheidungstexte:bool, reschtssaetze:bool) -> dict:
     '''
