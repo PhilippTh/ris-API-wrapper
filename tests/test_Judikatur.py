@@ -1,131 +1,102 @@
 from risApiWrapper.Judikatur import *
+import pytest
 
-def testJustizEntscheidungstext():
-    """Test an API call for Justiz() to get a Entscheidungstext"""
+@pytest.mark.parametrize("case_number,entscheidungstexte,rechtssaetze", [("5Ob234/20b", True, False), ("5Ob234/20b", False, True)])
+def test_justiz(case_number, entscheidungstexte, rechtssaetze):
+    """Test an API call for Justiz()"""
 
-    wrapper_instance = Justiz(case_number="5Ob234/20b", rechtssaetze=False)
+    wrapper_instance = Justiz(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
         assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "5Ob234/20b" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
-        assert item.keys() == {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
+        assert any(case_number in case_number for case_number in item["case_number"]), "checks whether the queried case number is found"
+        if entscheidungstexte and not rechtssaetze:
+            assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
+        elif rechtssaetze and not entscheidungstexte:
+            assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
+            assert "rechtssatz_number" in item.keys()
+        assert all(key in item.keys() for key in {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}), "checks whether an item has all desired fields"
 
-def testJustizRechtssatz():
-    """Test an API call for Justiz() to get a Rechtssatz"""
+@pytest.mark.skip(reason="Sorting not implemented yet")   
+def test_justiz_sort():
+    """Test an API call for Justiz() to get a sorted list"""
 
     wrapper_instance = Justiz(case_number="5Ob234/20b", entscheidungstexte=False)
-    response = wrapper_instance.info()
+    response = wrapper_instance.info(sort_key="case_number")
+    assert sorted(response, key=lambda item : item["case_number"])
 
-    assert isinstance(response, list)
-    for item in wrapper_instance:
-        assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "5Ob234/20b" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
-        assert item.keys() == {"type", "rechtssatz_number", "decisions", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
-
-def testVfghEntscheidungstext():
+@pytest.mark.parametrize("case_number,entscheidungstexte,rechtssaetze", [("E3310/2020", True, False), ("E3310/2020", False, True)])
+def test_vfgh(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Vfgh() to get a Rechtssatz"""
 
-    wrapper_instance = Vfgh(case_number="E3310/2020", entscheidungstexte=False)
+    wrapper_instance = Vfgh(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
         assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "E3310/2020" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
-        assert item.keys() == {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
+        assert any("E3310/2020" in case_number for case_number in item["case_number"]), "checks whether the queried case number is found"
+        if entscheidungstexte and not rechtssaetze:
+            assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
+        elif rechtssaetze and not entscheidungstexte:
+            assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
+            assert "rechtssatz_number" in item.keys()
+        assert all(key in item.keys() for key in {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}), "checks whether an item has all desired fields"
 
-def testVfghRechtssatz():
-    """Test an API call for Vfgh() to get a Rechtssatz"""
-
-    wrapper_instance = Vfgh(case_number="E3310/2020", entscheidungstexte=False)
-    response = wrapper_instance.info()
-
-    assert isinstance(response, list)
-    for item in wrapper_instance:
-        assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "E3310/2020" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
-        assert item.keys() == {"type", "rechtssatz_number", "decisions", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
-
-def testVwghEntscheidungstext():
+@pytest.mark.parametrize("case_number,entscheidungstexte,rechtssaetze", [("5Ob234/20b", True, False), ("5Ob234/20b", False, True)])
+def test_vwgh(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Vwgh() to get a Rechtssatz"""
 
-    wrapper_instance = Vwgh(case_number="So 2021/03/0006", entscheidungstexte=False)
-    response = wrapper_instance.info()
-
-    assert isinstance(response, list), "checks whether .info() returns a list"
-    for item in wrapper_instance:
-        assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "So 2021/03/0006" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
-        assert item.keys() == {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
-
-def testVwghRechtssatz():
-    """Test an API call for Vwgh() to get a Rechtssatz"""
-
-    wrapper_instance = Vwgh(case_number="So 2021/03/0006", entscheidungstexte=False)
+    wrapper_instance = Vwgh(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list)
     for item in wrapper_instance:
         assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "So 2021/03/0006" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
-        assert item.keys() == {"type", "rechtssatz_number", "decisions", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
+        assert any("So 2021/03/0006" in case_number for case_number in item["case_number"]), "checks whether the queried case number is found"
+        if entscheidungstexte and not rechtssaetze:
+            assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
+        elif rechtssaetze and not entscheidungstexte:
+            assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
+            assert "rechtssatz_number" in item.keys()
+        assert all(key in item.keys() for key in {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}), "checks whether an item has all desired fields"
 
-def testBvwgEntscheidungstext():
+@pytest.mark.parametrize("case_number,entscheidungstexte,rechtssaetze", [("W241 2175652-1", True, False), ("W241 2175652-1", False, True)])
+def test_bvwg(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Bvwg() to get a Rechtssatz"""
 
-    wrapper_instance = Bvwg(case_number="W241 2175652-1", entscheidungstexte=False)
+    wrapper_instance = Bvwg(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
         assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "W241 2175652-1" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
-        assert item.keys() == {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
+        assert any("W241 2175652-1" in case_number for case_number in item["case_number"]), "checks whether the queried case number is found"
+        if entscheidungstexte and not rechtssaetze:
+            assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
+        elif rechtssaetze and not entscheidungstexte:
+            assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
+            assert "rechtssatz_number" in item.keys()
+        assert all(key in item.keys() for key in {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}), "checks whether an item has all desired fields"
 
-def testBvwgRechtssatz():
-    """Test an API call for Bvwg() to get a Rechtssatz"""
-
-    wrapper_instance = Bvwg(case_number="W241 2175652-1", entscheidungstexte=False)
-    response = wrapper_instance.info()
-
-    assert isinstance(response, list)
-    for item in wrapper_instance:
-        assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "W241 2175652-1" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
-        assert item.keys() == {"type", "rechtssatz_number", "decisions", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
-
-def testLvwgEntscheidungstext():
+@pytest.mark.parametrize("case_number,entscheidungstexte,rechtssaetze", [("LVwG-AV-953/001-2021", True, False), ("LVwG-AV-953/001-2021", False, True)])
+def test_lvwg(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Lvwg() to get a Rechtssatz"""
 
-    wrapper_instance = Bvwg(case_number="LVwG-AV-953/001-2021", entscheidungstexte=False)
+    wrapper_instance = Bvwg(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
         assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "LVwG-AV-953/001-2021" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
-        assert item.keys() == {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
+        assert any("LVwG-AV-953/001-2021" in case_number for case_number in item["case_number"]), "checks whether the queried case number is found"
+        if entscheidungstexte and not rechtssaetze:
+            assert item["type"] == "Entscheidungstext", "checks whether all found items are of type 'Entscheidungstext'"
+        elif rechtssaetze and not entscheidungstexte:
+            assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
+            assert "rechtssatz_number" in item.keys()
+        assert all(key in item.keys() for key in {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}), "checks whether an item has all desired fields"
 
-def testLvwgRechtssatz():
-    """Test an API call for Lvwg() to get a Rechtssatz"""
-
-    wrapper_instance = Bvwg(case_number="LVwG-AV-953/001-2021", entscheidungstexte=False)
-    response = wrapper_instance.info()
-
-    assert isinstance(response, list)
-    for item in wrapper_instance:
-        assert isinstance(item, dict), "checks whether the individual items are dicts"
-        assert "LVwG-AV-953/001-2021" in item["case_number"], "checks whether the wanted case number is found"
-        assert item["type"] == "Rechtssatz", "checks whether all found items are of type 'Rechtssatz'"
-        assert item.keys() == {"type", "rechtssatz_number", "decisions", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}, "checks whether an item has all desired fields"
+#TODO (PTH) add the remaining tests
