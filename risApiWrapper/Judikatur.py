@@ -201,7 +201,7 @@ class Gbk():
     '''
     Creates an iterable object representing a list of queried cases by the "Gleichbehandlungskommission".
     '''
-    def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, gbk_entscheidungsart="Undefined", gbk_kommission="Undefined", gbk_senat="Undefined", gbk_diskriminierungsgrund="Undefined"):
+    def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", gbk_entscheidungsart="Undefined", gbk_kommission="Undefined", gbk_senat="Undefined", gbk_diskriminierungsgrund="Undefined"):
         if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
             raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
 
@@ -219,7 +219,8 @@ class Gbk():
 
         arguments = {"Applikation": "Gbk", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "GbkRequestEntscheidungsart": gbk_entscheidungsart, "GbkKommission": gbk_kommission, "GbkSenat": gbk_senat, "GbkDiskriminierungsgrund": gbk_diskriminierungsgrund}
 
-        response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
+        # There are no Rechtssaetze in Gbk decisions
+        response = _request(arguments)
 
         self._results = _convert_results(response)
     
@@ -384,34 +385,35 @@ def _convert_results(raw_results: list) -> list:
     converted_results = []
     for raw_case in raw_results:
         converted_case ={}
-        if raw_case["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Rechtssatz":
-            converted_case["type"] = "Rechtssatz"
-            # TODO(PTH) incorporate raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"] for rechtssätze
-            try:
-                # Sometimes multiple rechtssatz_number are assigned. This data field should therefore always be a list.
-                converted_case["rechtssatz_number"] = _to_list([raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Rechtssatznummern"]["item"]])
-            except KeyError:
+        try:
+            if raw_case["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Rechtssatz":
+                converted_case["type"] = "Rechtssatz"
+                # TODO(PTH) incorporate raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"] for rechtssätze
+                try:
+                    # Sometimes multiple rechtssatz_number are assigned. This data field should therefore always be a list.
+                    converted_case["rechtssatz_number"] = _to_list([raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Rechtssatznummern"]["item"]])
+                except KeyError:
+                    converted_case["rechtssatz_number"] = None
+                try:
+                    converted_case["decisions"] =[]
+                    if isinstance(raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"], list):
+                        for decision in raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]:
+                            converted_case["decisions"].append({"case_number" : decision["Geschaeftszahl"], "judicial_body" : decision["Gericht"], "decision_date" : decision["Entscheidungsdatum"], "document_url" : decision["DokumentUrl"]})
+                    else:
+                        converted_case["decisions"].append({"case_number" : raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["Geschaeftszahl"], 
+                        "judicial_body" : raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["Gericht"], 
+                        "decision_date" : raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["Entscheidungsdatum"], 
+                        "document_url" : raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["DokumentUrl"]})
+                except KeyError:
+                    converted_case["decisions"] = None
+
+            elif raw_case["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Text":
+                converted_case["type"] = "Entscheidungstext"
+                # In order to allow for sorting lists of "rechtssaetze" and "Entscheidungstexte" by "rechtssatz_number" the following field has to be included.
                 converted_case["rechtssatz_number"] = None
-            try:
-                converted_case["decisions"] =[]
-                if isinstance(raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"], list):
-                    for decision in raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]:
-                        converted_case["decisions"].append({"case_number" : decision["Geschaeftszahl"], "judicial_body" : decision["Gericht"], "decision_date" : decision["Entscheidungsdatum"], "document_url" : decision["DokumentUrl"]})
-                else:
-                    converted_case["decisions"].append({"case_number" : raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["Geschaeftszahl"], 
-                    "judicial_body" : raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["Gericht"], 
-                    "decision_date" : raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["Entscheidungsdatum"], 
-                    "document_url" : raw_case["Data"]["Metadaten"]["Judikatur"]["Justiz"]["Entscheidungstexte"]["item"]["DokumentUrl"]})
-            except KeyError:
-                converted_case["decisions"] = None
 
-        elif raw_case["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Text":
-            converted_case["type"] = "Entscheidungstext"
-            # In order to allow for sorting lists of "rechtssaetze" and "Entscheidungstexte" by "rechtssatz_number" the following field has to be included.
-            converted_case["rechtssatz_number"] = None
-
-        else:
-            # This should never be the case!
+        except KeyError:
+            # This is the case with all tested decisions by the GBK.
             converted_case["type"] = None
 
         try:
