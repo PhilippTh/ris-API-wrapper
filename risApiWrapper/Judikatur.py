@@ -407,6 +407,8 @@ def _convert_results(raw_results: list) -> list:
 
         elif raw_case["Data"]["Metadaten"]["Judikatur"]["Dokumenttyp"] == "Text":
             converted_case["type"] = "Entscheidungstext"
+            # In order to allow for sorting lists of "rechtssaetze" and "Entscheidungstexte" by "rechtssatz_number" the following field has to be included.
+            converted_case["rechtssatz_number"] = None
 
         else:
             # This should never be the case!
@@ -470,13 +472,12 @@ def _to_list(data) -> list:
     return [data] if isinstance(data, str) else data
 
 def _sort_results(raw_results: list, sort_key: str, ascending: bool) -> list:
-    if sort_key not in ["type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "published", "edited"]:
-        raise ValueError('Please provide a valid argument for "sort_key". The results can be sorted by "type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "published" or "edited".')
-    # TODO(PTH) implement sort algorithm; check to make rechtssatz_number work; many fields can be lists
+    if sort_key not in ["type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "edited"]:
+        raise ValueError('Please provide a valid argument for "sort_key". The results can be sorted by "type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published" or "edited".')
     if ascending:
-        return raw_results.sort(key=lambda item: item[sort_key], reverse=True)
+        return sorted(raw_results, key=lambda item: item[sort_key], reverse=True)
     else:
-        return raw_results.sort(key=lambda item: item[sort_key], reverse=False)
+        return sorted(raw_results, key=lambda item: item[sort_key], reverse=False)
 
 def _rechtssatz_or_enscheidungstext(arguments:dict, entscheidungstexte:bool, reschtssaetze:bool) -> dict:
     '''
@@ -487,9 +488,9 @@ def _rechtssatz_or_enscheidungstext(arguments:dict, entscheidungstexte:bool, res
     if entscheidungstexte and reschtssaetze:
         return arguments
     if entscheidungstexte and not reschtssaetze:
-        arguments["Dokumenttyp[SucheInEntscheidungstexten]"] = [True]
+        arguments["Dokumenttyp[SucheInEntscheidungstexten]"] = True
         return arguments
     if not entscheidungstexte and reschtssaetze:
-        arguments["Dokumenttyp[SucheInRechtssaetzen]"] = [True]
+        arguments["Dokumenttyp[SucheInRechtssaetzen]"] = True
         return arguments
     raise ValueError('"entscheidungstexte" and "reschtssaetze" cannot both be False. Please provide at least one argument as True.')

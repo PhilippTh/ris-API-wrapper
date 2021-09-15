@@ -19,13 +19,16 @@ def test_justiz(case_number, entscheidungstexte, rechtssaetze):
             assert "rechtssatz_number" in item.keys()
         assert all(key in item.keys() for key in {"type", "case_number", "european_case_law_identifier", "judicial_body", "decision_date", "published", "edited", "legal_norms", "document_url", "content_urls"}), "checks whether an item has all desired fields"
 
-@pytest.mark.skip(reason="Sorting not implemented yet")   
-def test_justiz_sort():
+@pytest.mark.parametrize("keywords,sort_key,ascending", [("unlauterer Wettbewerb", "case_number", False), ("unlauterer Wettbewerb", "rechtssatz_number", True)])
+def test_sort(keywords, sort_key, ascending):
     """Test an API call for Justiz() to get a sorted list"""
 
-    wrapper_instance = Justiz(case_number="5Ob234/20b", entscheidungstexte=False)
-    response = wrapper_instance.info(sort_key="case_number")
-    assert sorted(response, key=lambda item : item["case_number"])
+    wrapper_instance = Justiz(keywords=keywords, published="EinemMonat")
+    response = wrapper_instance.info(sort_key=sort_key)
+    if ascending:
+        assert all(response[i]["case_number"] >= response[i+1]["case_number"] for i in range(len(response) - 1))
+    else:
+        assert all(response[i]["case_number"] <= response[i+1]["case_number"] for i in range(len(response) - 1))
 
 @pytest.mark.parametrize("case_number,entscheidungstexte,rechtssaetze", [("E3310/2020", True, False), ("E3310/2020", False, True)])
 def test_vfgh(case_number, entscheidungstexte, rechtssaetze):
