@@ -7,8 +7,7 @@ class Justiz():
     Creates an iterable object representing a list of queried cases by civil or criminal courts.
     '''
     def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True):
-        if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
+        _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
                 
         arguments = {"Applikation": "Justiz", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
         
@@ -43,11 +42,8 @@ class Vfgh():
     Creates an iterable object representing a list of queried cases by the constitutional court.
     '''
     def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, vfgh_entscheidungsart="Undefined"):
-        if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
-
-        if vfgh_entscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis", "Vergleich"]:
-            raise ValueError('Please provide a valid argument for "vfgh_entscheidungsart". The API accepts "Undefined", "Beschluss", "Erkenntnis"or "Vergleich".')
+        _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+        _input_validation("vfgh_entscheidungsart", vfgh_entscheidungsart, ["Undefined", "Beschluss", "Erkenntnis", "Vergleich"])
 
         arguments = {"Applikation": "Vfgh", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "VfghRequestEntscheidungsart": vfgh_entscheidungsart}
 
@@ -82,11 +78,8 @@ class Vwgh():
     Creates an iterable object representing a list of queried cases by the high administrative court.
     '''
     def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, vwgh_entscheidungsart="Undefined"):
-        if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
-
-        if vwgh_entscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis", "BeschlussVS", "ErkenntnisVS"]:
-            raise ValueError('Please provide a valid argument for "vwgh_entscheidungsart". The API accepts "Undefined", "Beschluss", "Erkenntnis", "BeschlussVS" or "ErkenntnisVS".')
+        _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+        _input_validation("vwgh_entscheidungsart", vwgh_entscheidungsart, ["Undefined", "Beschluss", "Erkenntnis", "BeschlussVS", "ErkenntnisVS"])
 
         arguments = {"Applikation": "Vwgh", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "VwghRequestEntscheidungsart": vwgh_entscheidungsart}
 
@@ -121,11 +114,8 @@ class Bvwg():
     Creates an iterable object representing a list of queried cases by the state administrative court.
     '''
     def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, bvwg_entscheidungsart="Undefined"):
-        if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
-
-        if bvwg_entscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis"]:
-            raise ValueError('Please provide a valid argument for "bvwg_entscheidungsart". The API accepts "Undefined", "Beschluss" or "Erkenntnis".')
+        _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+        _input_validation("bvwg_entscheidungsart", bvwg_entscheidungsart, ["Undefined", "Beschluss", "Erkenntnis"])
 
         arguments = {"Applikation": "Bvwg", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "BvwgRequestEntscheidungsart": bvwg_entscheidungsart}
 
@@ -160,14 +150,9 @@ class Lvwg():
     Creates an iterable object representing a list of queried cases by regional administrative courts.
     '''
     def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None,  published="Undefined", entscheidungstexte=True, rechtssaetze=True, lvwg_entscheidungsart="Undefined", lvwg_bundesland="Undefined"):
-        if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
-
-        if lvwg_entscheidungsart not in ["Undefined", "Beschluss", "Erkenntnis", "Bescheid"]:
-            raise ValueError('Please provide a valid argument for "lvwg_entscheidungsart". The API accepts "Undefined", "Beschluss", "Erkenntnis" or "Bescheid".')
-
-        if lvwg_bundesland not in ["Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg", "Wien"]:
-            raise ValueError('Please provide a valid argument for "lvwg_bundesland". The API accepts "Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg" or "Wien".')
+        _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+        _input_validation("lvwg_entscheidungsart", lvwg_entscheidungsart, ["Undefined", "Beschluss", "Erkenntnis", "Bescheid"])
+        _input_validation("lvwg_bundesland", lvwg_bundesland, ["Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg", "Wien"])
 
         arguments = {"Applikation": "Lvwg", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "LvwgRequestEntscheidungsart": lvwg_entscheidungsart, "LvwgBundesland": lvwg_bundesland}
 
@@ -202,20 +187,11 @@ class Gbk():
     Creates an iterable object representing a list of queried cases by the "Gleichbehandlungskommission".
     '''
     def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", gbk_entscheidungsart="Undefined", gbk_kommission="Undefined", gbk_senat="Undefined", gbk_diskriminierungsgrund="Undefined"):
-        if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
-
-        if gbk_entscheidungsart not in ["Undefined", "Einzelfallpruefungsergebnis", "Gutachten"]:
-            raise ValueError('Please provide a valid argument for "gbk_entscheidungsart". The API accepts "Undefined", "Einzelfallpruefungsergebnis" or "Gutachten".')
-
-        if gbk_kommission not in ["Undefined", "BundesGleichbehandlungskommission", "Gleichbehandlungskommission"]:
-            raise ValueError('Please provide a valid argument for "gbk_kommission". The API accepts "Undefined", "BundesGleichbehandlungskommission" or "Gleichbehandlungskommission".')
-
-        if gbk_senat not in ["Undefined", "I", "II", "III"]:
-            raise ValueError('Please provide a valid argument for "gbk_senat". The API accepts "Undefined", "I", "II" or "III".')
-
-        if gbk_diskriminierungsgrund not in ["Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung", "Mehrfachdiskriminierung"]:
-            raise ValueError('Please provide a valid argument for "gbk_diskriminierungsgrund". The API accepts "Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung" or "Mehrfachdiskriminierung".')
+        _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+        _input_validation("gbk_entscheidungsart", gbk_entscheidungsart, ["Undefined", "Einzelfallpruefungsergebnis", "Gutachten"])
+        _input_validation("gbk_kommission", gbk_kommission, ["Undefined", "BundesGleichbehandlungskommission", "Gleichbehandlungskommission"])
+        _input_validation("gbk_senat", gbk_senat, ["Undefined", "I", "II", "III"])
+        _input_validation("gbk_diskriminierungsgrund", gbk_diskriminierungsgrund, ["Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung", "Mehrfachdiskriminierung"])
 
         arguments = {"Applikation": "Gbk", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "GbkRequestEntscheidungsart": gbk_entscheidungsart, "GbkKommission": gbk_kommission, "GbkSenat": gbk_senat, "GbkDiskriminierungsgrund": gbk_diskriminierungsgrund}
 
@@ -251,14 +227,9 @@ class Dsk():
     Creates an iterable object representing a list of queried cases by the data protecton authority.
     '''
     def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, dsk_entscheidungsart="Undefined", dsk_behoerde="Undefined"):
-        if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
-
-        if dsk_entscheidungsart not in ["Undefined", "BescheidBeschwerde", "BescheidInternatDatenverkehr", "BescheidRegistrierung", "Bescheid__46_47_DSG_2000", "BescheidSonstiger", "Empfehlung", "Verfahrensschriftsaetze"]:
-            raise ValueError('Please provide a valid argument for "dsk_entscheidungsart". The API accepts "Undefined", "BescheidBeschwerde", "BescheidInternatDatenverkehr", "BescheidRegistrierung", "Bescheid__46_47_DSG_2000", "BescheidSonstiger", "Empfehlung" or "Verfahrensschriftsaetze".')
-
-        if dsk_behoerde not in ["Undefined", "Datenschutzkommission", "Datenschutzbehoerde"]:
-            raise ValueError('Please provide a valid argument for "dsk_behoerde". The API accepts "Undefined", "Datenschutzkommission" or "Datenschutzbehoerde".')
+        _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+        _input_validation("dsk_entscheidungsart", dsk_entscheidungsart, ["Undefined", "BescheidBeschwerde", "BescheidInternatDatenverkehr", "BescheidRegistrierung", "Bescheid__46_47_DSG_2000", "BescheidSonstiger", "Empfehlung", "Verfahrensschriftsaetze"])
+        _input_validation("dsk_behoerde", dsk_behoerde, ["Undefined", "Datenschutzkommission", "Datenschutzbehoerde"])
 
         arguments = {"Applikation": "Dsk", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "DskRequestEntscheidungsart": dsk_entscheidungsart, "DskBehoerde": dsk_behoerde}
 
@@ -293,8 +264,7 @@ class Dok():
     Creates an iterable object representing a list of queried cases by the "Disziplinarkommission".
     '''
     def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True):
-        if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
+        _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
         
         arguments = {"Applikation": "Dok", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
 
@@ -329,11 +299,8 @@ class Pvak():
     Creates an iterable object representing a list of queried cases by the "Personalvertretungsaufsichtsbehörde".
     '''
     def __init__(self, keywords=None, case_number=None, legal_norm=None, from_date=None, to_date=None, published="Undefined", entscheidungstexte=True, rechtssaetze=True, pvak_behoerde="Undefined"):
-        if published not in ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"]:
-            raise ValueError('Please provide a valid argument for "published". The API accepts "Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten" or "EinemJahr".')
-
-        if pvak_behoerde not in ["Undefined", "PersonalvertretungsAufsichtskommission", "Personalvertretungsaufsichtsbehoerde"]:
-            raise ValueError('Please provide a valid argument for "pvak_behoerde". The API accepts "Undefined", "PersonalvertretungsAufsichtskommission" or "Personalvertretungsaufsichtsbehoerde".')
+        _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+        _input_validation("pvak_behoerde", pvak_behoerde, ["Undefined", "PersonalvertretungsAufsichtskommission", "Personalvertretungsaufsichtsbehoerde"])
 
         arguments = {"Applikation": "Pvak", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "PvakBehoerde": pvak_behoerde}
 
@@ -496,3 +463,10 @@ def _rechtssatz_or_enscheidungstext(arguments:dict, entscheidungstexte:bool, res
         arguments["Dokumenttyp[SucheInRechtssaetzen]"] = True
         return arguments
     raise ValueError('"entscheidungstexte" and "reschtssaetze" cannot both be False. Please provide at least one argument as True.')
+
+def _input_validation(key: str, value: str, values: list) -> None:
+    '''
+    Validates the given inputs if they are accepted by the API.
+    '''
+    if value not in values:
+        raise ValueError('Please provide a valid argument for "{0}". The API accepts "{1}" or "{2}".'.format(key, '", "'.join(values[0:-2], values[-1])))
