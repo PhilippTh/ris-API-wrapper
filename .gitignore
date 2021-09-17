@@ -2,7 +2,6 @@
 .vscode
 .pytest_cache
 conf.json
-multiresponse.json
-oneresponse.json
+var
 tests/__pycache__
 risApiWrapper/__pycache__
