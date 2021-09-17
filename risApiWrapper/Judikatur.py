@@ -1,8 +1,31 @@
 import requests
 from dataclasses import dataclass
 
+
 @dataclass
-class Justiz():
+class _BaseClass:
+    def __iter__(self):
+        return iter(self._results)
+
+    def __len__(self):
+        return len(self._results)
+
+    def sort(self, sort_key="", ascending=False) -> None:
+        '''
+        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
+        '''
+        self._results = _sort_results(self._results)
+
+    def info(self, sort_key="", ascending=False) -> list:
+        '''
+        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
+        '''
+        if sort_key:
+            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
+        else:
+            return self._results
+
+class Justiz(_BaseClass):
     '''
     Creates an iterable object representing a list of queried cases by civil or criminal courts.
     '''
@@ -15,29 +38,8 @@ class Justiz():
 
         self._results = _convert_results(response)
     
-    def __iter__(self):
-        return iter(self._results)
 
-    def __len__(self):
-        return len(self._results)
-
-    def sort(self, sort_key="", ascending=False) -> None:
-        '''
-        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
-        '''
-        _sort_results(self._results)
-
-    def info(self, sort_key="", ascending=False) -> list:
-        '''
-        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
-        '''
-        if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
-        else:
-            return self._results
-
-@dataclass
-class Vfgh():
+class Vfgh(_BaseClass):
     '''
     Creates an iterable object representing a list of queried cases by the constitutional court.
     '''
@@ -51,29 +53,8 @@ class Vfgh():
         
         self._results = _convert_results(response)
 
-    def __iter__(self):
-        return iter(self._results)
 
-    def __len__(self):
-        return len(self._results)
-
-    def sort(self, sort_key="", ascending=False) -> None:
-        '''
-        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
-        '''
-        _sort_results(self._results)
-
-    def info(self, sort_key="", ascending=False) -> list:
-        '''
-        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
-        '''
-        if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
-        else:
-            return self._results
-
-@dataclass
-class Vwgh():
+class Vwgh(_BaseClass):
     '''
     Creates an iterable object representing a list of queried cases by the high administrative court.
     '''
@@ -86,30 +67,9 @@ class Vwgh():
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self._results = _convert_results(response)
-    
-    def __iter__(self):
-        return iter(self._results)
 
-    def __len__(self):
-        return len(self._results)
 
-    def sort(self, sort_key="", ascending=False) -> None:
-        '''
-        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
-        '''
-        _sort_results(self._results)
-
-    def info(self, sort_key="", ascending=False) -> list:
-        '''
-        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
-        '''
-        if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
-        else:
-            return self._results
-
-@dataclass
-class Bvwg():
+class Bvwg(_BaseClass):
     '''
     Creates an iterable object representing a list of queried cases by the state administrative court.
     '''
@@ -122,30 +82,9 @@ class Bvwg():
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
         self._results = _convert_results(response)
-    
-    def __iter__(self):
-        return iter(self._results)
 
-    def __len__(self):
-        return len(self._results)
 
-    def sort(self, sort_key="", ascending=False) -> None:
-        '''
-        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
-        '''
-        _sort_results(self._results)
-
-    def info(self, sort_key="", ascending=False) -> list:
-        '''
-        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
-        '''
-        if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
-        else:
-            return self._results
-
-@dataclass
-class Lvwg():
+class Lvwg(_BaseClass):
     '''
     Creates an iterable object representing a list of queried cases by regional administrative courts.
     '''
@@ -160,29 +99,8 @@ class Lvwg():
 
         self._results = _convert_results(response)
 
-    def __iter__(self):
-        return iter(self._results)
 
-    def __len__(self):
-        return len(self._results)
-
-    def sort(self, sort_key="", ascending=False) -> None:
-        '''
-        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
-        '''
-        _sort_results(self._results)
-
-    def info(self, sort_key="", ascending=False) -> list:
-        '''
-        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
-        '''
-        if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
-        else:
-            return self._results
-
-@dataclass
-class Gbk():
+class Gbk(_BaseClass):
     '''
     Creates an iterable object representing a list of queried cases by the "Gleichbehandlungskommission".
     '''
@@ -199,30 +117,9 @@ class Gbk():
         response = _request(arguments)
 
         self._results = _convert_results(response)
-    
-    def __iter__(self):
-        return iter(tuple(self._results))
 
-    def __len__(self):
-        return len(self._results)
 
-    def sort(self, sort_key="", ascending=False) -> None:
-        '''
-        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
-        '''
-        _sort_results(self._results)
-
-    def info(self, sort_key="", ascending=False) -> list:
-        '''
-        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
-        '''
-        if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
-        else:
-            return self._results
-
-@dataclass
-class Dsk():
+class Dsk(_BaseClass):
     '''
     Creates an iterable object representing a list of queried cases by the data protecton authority.
     '''
@@ -237,29 +134,8 @@ class Dsk():
 
         self._results = _convert_results(response)
     
-    def __iter__(self):
-        return iter(self._results)
 
-    def __len__(self):
-        return len(self._results)
-
-    def sort(self, sort_key="", ascending=False) -> None:
-        '''
-        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
-        '''
-        _sort_results(self._results)
-
-    def info(self, sort_key="", ascending=False) -> list:
-        '''
-        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
-        '''
-        if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
-        else:
-            return self._results
-
-@dataclass
-class Dok():
+class Dok(_BaseClass):
     '''
     Creates an iterable object representing a list of queried cases by the "Disziplinarkommission".
     '''
@@ -272,29 +148,8 @@ class Dok():
 
         self._results = _convert_results(response)
     
-    def __iter__(self):
-        return iter(self._results)
 
-    def __len__(self):
-        return len(self._results)
-
-    def sort(self, sort_key="", ascending=False) -> None:
-        '''
-        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
-        '''
-        _sort_results(self._results)
-
-    def info(self, sort_key="", ascending=False) -> list:
-        '''
-        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
-        '''
-        if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
-        else:
-            return self._results
-
-@dataclass
-class Pvak():
+class Pvak(_BaseClass):
     '''
     Creates an iterable object representing a list of queried cases by the "Personalvertretungsaufsichtsbehörde".
     '''
@@ -307,27 +162,6 @@ class Pvak():
         response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self._results = _convert_results(response)
-    
-    def __iter__(self):
-        return iter(self._results)
-
-    def __len__(self):
-        return len(self._results)
-
-    def sort(self, sort_key="", ascending=False) -> None:
-        '''
-        Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
-        '''
-        _sort_results(self._results)
-
-    def info(self, sort_key="", ascending=False) -> list:
-        '''
-        Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
-        '''
-        if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
-        else:
-            return self._results
 
 
 def _request(parameters) -> list:
