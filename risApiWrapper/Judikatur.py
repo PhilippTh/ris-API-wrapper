@@ -1,9 +1,12 @@
-import requests
 from dataclasses import dataclass
+from risApiWrapper.Helper import _request, _to_list, _sort_results, _input_validation
 
 
 @dataclass
 class _BaseClass:
+    '''
+    A class providing basic functions to be inherited by applications of the category "Judikatur".
+    '''
     def __iter__(self):
         return iter(self._results)
 
@@ -14,14 +17,14 @@ class _BaseClass:
         '''
         Sorts the queried results. If sorting should not be persistent, use .info() and provide a sort_key in order to receive a sorted list.
         '''
-        self._results = _sort_results(self._results)
+        self._results = _sort_results(self._results, sort_key=sort_key, sort_keys=["type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "edited"], ascending=ascending)
 
     def info(self, sort_key="", ascending=False) -> list:
         '''
         Retruns a list of queried results. If sorting should be persitent, use .sort() to sort the results.
         '''
         if sort_key:
-            return _sort_results(self._results, sort_key=sort_key, ascending=ascending)
+            return _sort_results(self._results, sort_key=sort_key, sort_keys=["type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "edited"], ascending=ascending)
         else:
             return self._results
 
@@ -34,7 +37,7 @@ class Justiz(_BaseClass):
                 
         arguments = {"Applikation": "Justiz", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
         
-        response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
+        response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self._results = _convert_results(response)
     
@@ -49,7 +52,7 @@ class Vfgh(_BaseClass):
 
         arguments = {"Applikation": "Vfgh", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "VfghRequestEntscheidungsart": vfgh_entscheidungsart}
 
-        response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
+        response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
         self._results = _convert_results(response)
 
@@ -64,7 +67,7 @@ class Vwgh(_BaseClass):
 
         arguments = {"Applikation": "Vwgh", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "VwghRequestEntscheidungsart": vwgh_entscheidungsart}
 
-        response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
+        response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self._results = _convert_results(response)
 
@@ -79,7 +82,7 @@ class Bvwg(_BaseClass):
 
         arguments = {"Applikation": "Bvwg", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "BvwgRequestEntscheidungsart": bvwg_entscheidungsart}
 
-        response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
+        response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
         
         self._results = _convert_results(response)
 
@@ -95,7 +98,7 @@ class Lvwg(_BaseClass):
 
         arguments = {"Applikation": "Lvwg", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "LvwgRequestEntscheidungsart": lvwg_entscheidungsart, "LvwgBundesland": lvwg_bundesland}
 
-        response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
+        response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self._results = _convert_results(response)
 
@@ -114,7 +117,7 @@ class Gbk(_BaseClass):
         arguments = {"Applikation": "Gbk", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "GbkRequestEntscheidungsart": gbk_entscheidungsart, "GbkKommission": gbk_kommission, "GbkSenat": gbk_senat, "GbkDiskriminierungsgrund": gbk_diskriminierungsgrund}
 
         # There are no Rechtssaetze in Gbk decisions
-        response = _request(arguments)
+        response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", arguments)
 
         self._results = _convert_results(response)
 
@@ -130,7 +133,7 @@ class Dsk(_BaseClass):
 
         arguments = {"Applikation": "Dsk", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "DskRequestEntscheidungsart": dsk_entscheidungsart, "DskBehoerde": dsk_behoerde}
 
-        response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
+        response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self._results = _convert_results(response)
     
@@ -144,7 +147,7 @@ class Dok(_BaseClass):
         
         arguments = {"Applikation": "Dok", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
 
-        response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
+        response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self._results = _convert_results(response)
     
@@ -159,30 +162,13 @@ class Pvak(_BaseClass):
 
         arguments = {"Applikation": "Pvak", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": from_date, "EntscheidungsdatumBis": to_date,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "PvakBehoerde": pvak_behoerde}
 
-        response = _request(_rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
+        response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, entscheidungstexte, rechtssaetze))
 
         self._results = _convert_results(response)
 
 
-def _request(parameters) -> list:
-    response = requests.get("https://data.bka.gv.at/ris/api/v2.5/judikatur", params=parameters).json()
-
-    # Return nothing if no items are found
-    if int(response["OgdSearchResult"]["OgdDocumentResults"]["Hits"]["#text"]) == 0:
-        return []
-
-    # If only one item is found, "OgdDocumentReference" contains only one dict.
-    # If multiple items are found, "OgdDocumentReference" contains a list of dicts.
-    results = [response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"]] if isinstance(response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"], dict) else response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"]
-
-    # If 100 items are found, there may be additional items on the next "page".
-    if len(response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"]) == 100:
-        parameters["Seitennummer"] += 1
-        results.append(_request(parameters))
-
-    return results
-
 def _convert_results(raw_results: list) -> list:
+    # TODO(PTH) we should refactor this
     converted_results = []
     for raw_case in raw_results:
         converted_case ={}
@@ -271,17 +257,6 @@ def _convert_results(raw_results: list) -> list:
 
     return converted_results
 
-def _to_list(data) -> list:
-    return [data] if isinstance(data, str) else data
-
-def _sort_results(raw_results: list, sort_key: str, ascending: bool) -> list:
-    _input_validation("sort_key", sort_key, ["type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "edited"])
-
-    if ascending:
-        return sorted(raw_results, key=lambda item: item[sort_key], reverse=True)
-    else:
-        return sorted(raw_results, key=lambda item: item[sort_key], reverse=False)
-
 def _rechtssatz_or_enscheidungstext(arguments:dict, entscheidungstexte:bool, reschtssaetze:bool) -> dict:
     '''
     "Dokumenttyp[SucheInRechtssaetzen]" and "Dokumenttyp[SucheInEntscheidungstexten]" behave strange.
@@ -297,10 +272,3 @@ def _rechtssatz_or_enscheidungstext(arguments:dict, entscheidungstexte:bool, res
         arguments["Dokumenttyp[SucheInRechtssaetzen]"] = True
         return arguments
     raise ValueError('"entscheidungstexte" and "reschtssaetze" cannot both be False. Please provide at least one argument as True.')
-
-def _input_validation(key: str, value: str, values: list) -> None:
-    '''
-    Validates the given inputs if they are accepted by the API.
-    '''
-    if value not in values:
-        raise ValueError('Please provide a valid argument for "{0}". Accepted arguments for "{0}" are "{1}" or "{2}".'.format(key, '", "'.join(values[0:-2], values[-1])))
