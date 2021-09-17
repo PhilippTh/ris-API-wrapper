@@ -441,8 +441,8 @@ def _to_list(data) -> list:
     return [data] if isinstance(data, str) else data
 
 def _sort_results(raw_results: list, sort_key: str, ascending: bool) -> list:
-    if sort_key not in ["type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "edited"]:
-        raise ValueError('Please provide a valid argument for "sort_key". The results can be sorted by "type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published" or "edited".')
+    _input_validation("sort_key", sort_key, ["type", "case_number", "european_case_law_identifier", "rechtssatz_number", "judicial_body", "decision_date", "published", "edited"])
+
     if ascending:
         return sorted(raw_results, key=lambda item: item[sort_key], reverse=True)
     else:
@@ -469,4 +469,4 @@ def _input_validation(key: str, value: str, values: list) -> None:
     Validates the given inputs if they are accepted by the API.
     '''
     if value not in values:
-        raise ValueError('Please provide a valid argument for "{0}". The API accepts "{1}" or "{2}".'.format(key, '", "'.join(values[0:-2], values[-1])))
+        raise ValueError('Please provide a valid argument for "{0}". Accepted arguments for "{0}" are "{1}" or "{2}".'.format(key, '", "'.join(values[0:-2], values[-1])))
