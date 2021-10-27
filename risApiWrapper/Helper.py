@@ -1,4 +1,5 @@
 import requests
+import re
 
 
 def _request(url, parameters) -> list:
@@ -45,3 +46,10 @@ def _input_validation(key: str, value: str, values: list) -> None:
     '''
     if value not in values:
         raise ValueError('Please provide a valid argument for "{0}". Accepted arguments for "{0}" are "{1}" or "{2}".'.format(key, '", "'.join(values[0:-2], values[-1])))
+
+def _date_input_validation(key: str, value: str) -> None:
+    '''
+    Validates the provided date against the format requirements of the API if a date is provided.
+    '''
+    if value and not re.match(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value):
+        raise ValueError(f'The date "{value}" provided for "{key}" is not formatted correctly. Please provide dates in the format "YYYY-MM-DD".')

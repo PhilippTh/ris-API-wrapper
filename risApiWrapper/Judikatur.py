@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from risApiWrapper.Helper import _request, _to_list, _sort_results, _input_validation
+from risApiWrapper.Helper import _request, _to_list, _sort_results, _input_validation, _date_input_validation
 
 
 @dataclass
@@ -69,6 +69,9 @@ class Justiz(_BaseClass):
     '''
     def __init__(self, keywords=None, legal_assessment=None, court=None, case_number=None, rechtssatz_number=None, legal_norm=None, official_reference=None,  decision_date_from=None, decision_date_to=None, published="Undefined", show_entscheidungstexte=True, show_rechtssaetze=True):
         _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+
+        _date_input_validation("decision_date_from", decision_date_from)
+        _date_input_validation("decision_date_to", decision_date_to)
                 
         arguments = {"Applikation": "Justiz", "Suchworte": keywords, "RechtlicheBeurteilung": legal_assessment, "Gericht": court, "Geschaeftszahl": case_number, "Rechtssatznummer": rechtssatz_number, "Norm": legal_norm, "Fundstelle": official_reference, "EntscheidungsdatumVon": decision_date_from, "EntscheidungsdatumBis": decision_date_to,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
         
@@ -118,6 +121,9 @@ class Vfgh(_BaseClass):
         _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
         _input_validation("type_of_decision", type_of_decision, ["Undefined", "Beschluss", "Erkenntnis", "Vergleich"])
 
+        _date_input_validation("decision_date_from", decision_date_from)
+        _date_input_validation("decision_date_to", decision_date_to)
+
         arguments = {"Applikation": "Vfgh", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "Sammlungsnummer": official_reference, "Index": index, "EntscheidungsdatumVon": decision_date_from, "EntscheidungsdatumBis": decision_date_to,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "VfghRequestEntscheidungsart": type_of_decision}
 
         response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, show_entscheidungstexte, show_rechtssaetze))
@@ -166,6 +172,9 @@ class Vwgh(_BaseClass):
         _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
         _input_validation("type_of_decision", type_of_decision, ["Undefined", "Beschluss", "Erkenntnis", "BeschlussVS", "ErkenntnisVS"])
 
+        _date_input_validation("decision_date_from", decision_date_from)
+        _date_input_validation("decision_date_to", decision_date_to)
+
         arguments = {"Applikation": "Vwgh", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "Sammlungsnummer": official_reference, "Index": index, "EntscheidungsdatumVon": decision_date_from, "EntscheidungsdatumBis": decision_date_to,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "VwghRequestEntscheidungsart": type_of_decision}
 
         response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, show_entscheidungstexte, show_rechtssaetze))
@@ -209,6 +218,9 @@ class Bvwg(_BaseClass):
     def __init__(self, keywords=None, case_number=None, legal_norm=None, decision_date_from=None, decision_date_to=None, published="Undefined", show_entscheidungstexte=True, show_rechtssaetze=True, type_of_decision="Undefined"):
         _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
         _input_validation("type_of_decision", type_of_decision, ["Undefined", "Beschluss", "Erkenntnis"])
+
+        _date_input_validation("decision_date_from", decision_date_from)
+        _date_input_validation("decision_date_to", decision_date_to)
 
         arguments = {"Applikation": "Bvwg", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": decision_date_from, "EntscheidungsdatumBis": decision_date_to,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "BvwgRequestEntscheidungsart": type_of_decision}
 
@@ -256,6 +268,9 @@ class Lvwg(_BaseClass):
         _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
         _input_validation("type_of_decision", type_of_decision, ["Undefined", "Beschluss", "Erkenntnis", "Bescheid"])
         _input_validation("federal_state", federal_state, ["Undefined", "Burgenland", "Kaernten", "Niederoesterreich", "Oberoesterreich", "Salzburg", "Steiermark", "Tirol", "Vorarlberg", "Wien"])
+
+        _date_input_validation("decision_date_from", decision_date_from)
+        _date_input_validation("decision_date_to", decision_date_to)
 
         arguments = {"Applikation": "Lvwg", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": decision_date_from, "EntscheidungsdatumBis": decision_date_to,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "LvwgRequestEntscheidungsart": type_of_decision, "LvwgBundesland": federal_state}
 
@@ -306,6 +321,9 @@ class Gbk(_BaseClass):
         _input_validation("senat", senat, ["Undefined", "I", "II", "III"])
         _input_validation("reason_for_discrimination", reason_for_discrimination, ["Undefined", "Geschlecht", "EthnischeZugehoerigkeit", "Religion", "Weltanschauung", "Alter", "SexuelleOrientierung", "Mehrfachdiskriminierung"])
 
+        _date_input_validation("decision_date_from", decision_date_from)
+        _date_input_validation("decision_date_to", decision_date_to)
+
         arguments = {"Applikation": "Gbk", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": decision_date_from, "EntscheidungsdatumBis": decision_date_to,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1,  "GbkRequestEntscheidungsart": type_of_decision, "GbkKommission": commission, "GbkSenat": senat, "GbkDiskriminierungsgrund": reason_for_discrimination}
 
         # There are no Rechtssaetze in Gbk decisions
@@ -354,6 +372,9 @@ class Dsk(_BaseClass):
         _input_validation("type_of_decision", type_of_decision, ["Undefined", "BescheidBeschwerde", "BescheidInternatDatenverkehr", "BescheidRegistrierung", "Bescheid__46_47_DSG_2000", "BescheidSonstiger", "Empfehlung", "Verfahrensschriftsaetze"])
         _input_validation("authority", authority, ["Undefined", "Datenschutzkommission", "Datenschutzbehoerde"])
 
+        _date_input_validation("decision_date_from", decision_date_from)
+        _date_input_validation("decision_date_to", decision_date_to)
+
         arguments = {"Applikation": "Dsk", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": decision_date_from, "EntscheidungsdatumBis": decision_date_to,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "DskRequestEntscheidungsart": type_of_decision, "DskBehoerde": authority}
 
         response = _request("https://data.bka.gv.at/ris/api/v2.5/judikatur", _rechtssatz_or_enscheidungstext(arguments, show_entscheidungstexte, show_rechtssaetze))
@@ -394,6 +415,9 @@ class Dok(_BaseClass):
     '''    
     def __init__(self, keywords=None, case_number=None, legal_norm=None, decision_date_from=None, decision_date_to=None, published="Undefined", show_entscheidungstexte=True, show_rechtssaetze=True):
         _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
+
+        _date_input_validation("decision_date_from", decision_date_from)
+        _date_input_validation("decision_date_to", decision_date_to)
         
         arguments = {"Applikation": "Dok", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": decision_date_from, "EntscheidungsdatumBis": decision_date_to,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1}
 
@@ -438,6 +462,9 @@ class Pvak(_BaseClass):
     def __init__(self, keywords=None, case_number=None, legal_norm=None, decision_date_from=None, decision_date_to=None, published="Undefined", show_entscheidungstexte=True, show_rechtssaetze=True, authority="Undefined"):
         _input_validation("published", published, ["Undefined", "EinerWoche", "ZweiWochen", "EinemMonat", "DreiMonaten", "SechsMonaten", "EinemJahr"])
         _input_validation("authority", authority, ["Undefined", "PersonalvertretungsAufsichtskommission", "Personalvertretungsaufsichtsbehoerde"])
+
+        _date_input_validation("decision_date_from", decision_date_from)
+        _date_input_validation("decision_date_to", decision_date_to)
 
         arguments = {"Applikation": "Pvak", "Suchworte": keywords, "Geschaeftszahl": case_number, "Norm": legal_norm, "EntscheidungsdatumVon": decision_date_from, "EntscheidungsdatumBis": decision_date_to,"ImRisSeit": published,"DokumenteProSeite": "OneHundred", "Seitennummer": 1, "PvakBehoerde": authority}
 
