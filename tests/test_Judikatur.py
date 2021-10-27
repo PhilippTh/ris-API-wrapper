@@ -5,7 +5,7 @@ import pytest
 def test_justiz(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Justiz()"""
 
-    wrapper_instance = Justiz(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
+    wrapper_instance = Justiz(case_number=case_number, show_rechtssaetze=rechtssaetze, show_entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
@@ -33,7 +33,7 @@ def test_sort(keywords, sort_key, ascending):
 def test_vfgh(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Vfgh()"""
 
-    wrapper_instance = Vfgh(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
+    wrapper_instance = Vfgh(case_number=case_number, show_rechtssaetze=rechtssaetze, show_entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
@@ -50,7 +50,7 @@ def test_vfgh(case_number, entscheidungstexte, rechtssaetze):
 def test_vwgh(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Vwgh()"""
 
-    wrapper_instance = Vwgh(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
+    wrapper_instance = Vwgh(case_number=case_number, show_rechtssaetze=rechtssaetze, show_entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list)
@@ -67,7 +67,7 @@ def test_vwgh(case_number, entscheidungstexte, rechtssaetze):
 def test_bvwg(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Bvwg()"""
 
-    wrapper_instance = Bvwg(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
+    wrapper_instance = Bvwg(case_number=case_number, show_rechtssaetze=rechtssaetze, show_entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
@@ -84,7 +84,7 @@ def test_bvwg(case_number, entscheidungstexte, rechtssaetze):
 def test_lvwg(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Lvwg()"""
 
-    wrapper_instance = Lvwg(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
+    wrapper_instance = Lvwg(case_number=case_number, show_rechtssaetze=rechtssaetze, show_entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
@@ -115,7 +115,7 @@ def test_gbk(case_number):
 def test_dsk(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Dsk()"""
 
-    wrapper_instance = Dsk(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
+    wrapper_instance = Dsk(case_number=case_number, show_rechtssaetze=rechtssaetze, show_entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
@@ -132,7 +132,7 @@ def test_dsk(case_number, entscheidungstexte, rechtssaetze):
 def test_dok(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Dok()"""
 
-    wrapper_instance = Dok(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
+    wrapper_instance = Dok(case_number=case_number, show_rechtssaetze=rechtssaetze, show_entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
@@ -149,7 +149,7 @@ def test_dok(case_number, entscheidungstexte, rechtssaetze):
 def test_pvak(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Pvak()"""
 
-    wrapper_instance = Pvak(case_number=case_number, rechtssaetze=rechtssaetze, entscheidungstexte=entscheidungstexte)
+    wrapper_instance = Pvak(case_number=case_number, show_rechtssaetze=rechtssaetze, show_entscheidungstexte=entscheidungstexte)
     response = wrapper_instance.info()
 
     assert isinstance(response, list), "checks whether .info() returns a list"
