@@ -49,7 +49,7 @@ def _request(url, parameters) -> list:
         == 100
     ):
         parameters["Seitennummer"] += 1
-        results.append(_request(parameters))
+        results += (_request(url,parameters))
 
     return results
 
