@@ -1163,11 +1163,44 @@ def _convert_results(raw_results: list) -> list:
             converted_case["document_url"] = None
 
         try:
-            converted_case["content_urls"] = {}
-            for url in raw_case["Data"]["Dokumentliste"]["ContentReference"][
-                "Urls"
-            ]["ContentUrl"]:
-                converted_case["content_urls"][url["DataType"]] = url["Url"]
+            # Sometimes (like 4Ob72/21y) multiple types of contents are
+            # provided which results in "ContentReference" containing a list.
+            converted_case["content_urls"] = []
+            if isinstance(
+                raw_case["Data"]["Dokumentliste"]["ContentReference"], dict
+            ):
+                for url in raw_case["Data"]["Dokumentliste"][
+                    "ContentReference"]["Urls"]["ContentUrl"]:
+                    converted_case["content_urls"].append(
+                        {
+                            "Name": raw_case["Data"]["Dokumentliste"][
+                                "ContentReference"]["Name"],
+                            "Datatype": url["DataType"],
+                            "Url": url["Url"],
+                        }
+                    )
+            else:
+                for element in raw_case["Data"]["Dokumentliste"][
+                    "ContentReference"]:
+                    if isinstance(element["Urls"]["ContentUrl"], dict):
+                        converted_case["content_urls"].append(
+                            {
+                                "Name": element["Name"],
+                                "Datatype": element["Urls"]["ContentUrl"][
+                                    "DataType"],
+                                "Url": element["Urls"]["ContentUrl"]["Url"],
+                            }
+                        )
+
+                    else:
+                        for url in element["Urls"]["ContentUrl"]:
+                            converted_case["content_urls"].append(
+                                {
+                                    "Name": element["Name"],
+                                    "Datatype": url["DataType"],
+                                    "Url": url["Url"],
+                                }
+                            )
         except KeyError:
             converted_case["content_urls"] = None
 
