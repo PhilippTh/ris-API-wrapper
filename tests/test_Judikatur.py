@@ -4,7 +4,8 @@ import pytest
 
 @pytest.mark.parametrize(
     "case_number,entscheidungstexte,rechtssaetze",
-    [("5Ob234/20b", True, False), ("5Ob234/20b", False, True)],
+    [("5Ob234/20b", True, False), ("5Ob234/20b", False, True),
+    ("4Ob72/21y", True, True)],
 )
 def test_justiz(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Justiz()"""
