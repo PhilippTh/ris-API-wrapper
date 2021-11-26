@@ -1163,11 +1163,23 @@ def _convert_results(raw_results: list) -> list:
             converted_case["document_url"] = None
 
         try:
+            # Not sure about this change, but worked for me...
+            # Sometimes multiple attachments are assigned. One must deal with such lists.
+            #--> See for example: 4Ob72/21y
             converted_case["content_urls"] = {}
-            for url in raw_case["Data"]["Dokumentliste"]["ContentReference"][
-                "Urls"
-            ]["ContentUrl"]:
-                converted_case["content_urls"][url["DataType"]] = url["Url"]
+            if (isinstance(raw_case["Data"]["Dokumentliste"]["ContentReference"], dict)):
+                for url in raw_case["Data"]["Dokumentliste"]["ContentReference"][
+                    "Urls"
+                ]["ContentUrl"]:
+                    converted_case["content_urls"][url["DataType"]] = url["Url"]
+            else:
+                else: # if there are lists of attachments one must deal with them 
+                    for element in raw_case["Data"]["Dokumentliste"]["ContentReference"]:
+                        if (isinstance(element["Urls"]["ContentUrl"], dict)):
+                          converted_case["content_urls"][element["Name"]]  = element["Urls"]["ContentUrl"]["Url"]
+                        else:
+                            for url in element["Urls"]["ContentUrl"]:
+                                converted_case["content_urls"][url["DataType"]] = url["Url"]
         except KeyError:
             converted_case["content_urls"] = None
 
