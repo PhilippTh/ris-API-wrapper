@@ -9,7 +9,7 @@ from risApiWrapper.Helper import (
 
 
 @dataclass
-class _BaseClass:
+class _Base_Class:
     """
     A class providing basic functions to be inherited by applications of the
     category "Judikatur".
@@ -67,7 +67,7 @@ class _BaseClass:
             return self._results
 
 
-class Justiz(_BaseClass):
+class Justiz(_Base_Class):
     """
     Parameters
     ----------
@@ -167,7 +167,7 @@ class Justiz(_BaseClass):
         self._results = _convert_results(response)
 
 
-class Vfgh(_BaseClass):
+class Vfgh(_Base_Class):
     """
     Parameters
     ----------
@@ -269,7 +269,7 @@ class Vfgh(_BaseClass):
         self._results = _convert_results(response)
 
 
-class Vwgh(_BaseClass):
+class Vwgh(_Base_Class):
     """
     Parameters
     ----------
@@ -378,7 +378,7 @@ class Vwgh(_BaseClass):
         self._results = _convert_results(response)
 
 
-class Bvwg(_BaseClass):
+class Bvwg(_Base_Class):
     """
     Parameters
     ----------
@@ -471,7 +471,7 @@ class Bvwg(_BaseClass):
         self._results = _convert_results(response)
 
 
-class Lvwg(_BaseClass):
+class Lvwg(_Base_Class):
     """
     Parameters
     ----------
@@ -586,7 +586,7 @@ class Lvwg(_BaseClass):
         self._results = _convert_results(response)
 
 
-class Gbk(_BaseClass):
+class Gbk(_Base_Class):
     """
     Parameters
     ----------
@@ -714,7 +714,7 @@ class Gbk(_BaseClass):
         self._results = _convert_results(response)
 
 
-class Dsk(_BaseClass):
+class Dsk(_Base_Class):
     """
     Parameters
     ----------
@@ -825,7 +825,7 @@ class Dsk(_BaseClass):
         self._results = _convert_results(response)
 
 
-class Dok(_BaseClass):
+class Dok(_Base_Class):
     """
     Parameters
     ----------
@@ -909,7 +909,7 @@ class Dok(_BaseClass):
         self._results = _convert_results(response)
 
 
-class Pvak(_BaseClass):
+class Pvak(_Base_Class):
     """
     Parameters
     ----------
@@ -1201,6 +1201,7 @@ def _convert_results(raw_results: list) -> list:
                                     "Url": url["Url"],
                                 }
                             )
+
         except KeyError:
             converted_case["content_urls"] = None
 
