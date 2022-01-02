@@ -4,8 +4,11 @@ import pytest
 
 @pytest.mark.parametrize(
     "case_number,entscheidungstexte,rechtssaetze",
-    [("5Ob234/20b", True, False), ("5Ob234/20b", False, True),
-    ("4Ob72/21y", True, True)],
+    [
+        ("5Ob234/20b", True, False),
+        ("5Ob234/20b", False, True),
+        ("4Ob72/21y", True, True),
+    ],
 )
 def test_justiz(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Justiz()"""
@@ -19,9 +22,7 @@ def test_justiz(case_number, entscheidungstexte, rechtssaetze):
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
-        assert isinstance(
-            item, dict
-        ), "checks whether the individual items are dicts"
+        assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert any(
             case_number in case_number for case_number in item["case_number"]
         ), "checks whether the queried case number is found"
@@ -91,9 +92,7 @@ def test_vfgh(case_number, entscheidungstexte, rechtssaetze):
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
-        assert isinstance(
-            item, dict
-        ), "checks whether the individual items are dicts"
+        assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert any(
             case_number in case_number for case_number in item["case_number"]
         ), "checks whether the queried case number is found"
@@ -139,9 +138,7 @@ def test_vwgh(case_number, entscheidungstexte, rechtssaetze):
 
     assert isinstance(response, list)
     for item in wrapper_instance:
-        assert isinstance(
-            item, dict
-        ), "checks whether the individual items are dicts"
+        assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert any(
             case_number in case_number for case_number in item["case_number"]
         ), "checks whether the queried case number is found"
@@ -187,9 +184,7 @@ def test_bvwg(case_number, entscheidungstexte, rechtssaetze):
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
-        assert isinstance(
-            item, dict
-        ), "checks whether the individual items are dicts"
+        assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert any(
             case_number in case_number for case_number in item["case_number"]
         ), "checks whether the queried case number is found"
@@ -221,10 +216,7 @@ def test_bvwg(case_number, entscheidungstexte, rechtssaetze):
 
 @pytest.mark.parametrize(
     "case_number,entscheidungstexte,rechtssaetze",
-    [
-        ("LVwG-AV-953/001-2021", True, False),
-        ("LVwG-AV-953/001-2021", False, True),
-    ],
+    [("LVwG-AV-953/001-2021", True, False), ("LVwG-AV-953/001-2021", False, True)],
 )
 def test_lvwg(case_number, entscheidungstexte, rechtssaetze):
     """Test an API call for Lvwg()"""
@@ -238,9 +230,7 @@ def test_lvwg(case_number, entscheidungstexte, rechtssaetze):
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
-        assert isinstance(
-            item, dict
-        ), "checks whether the individual items are dicts"
+        assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert any(
             case_number in case_number for case_number in item["case_number"]
         ), "checks whether the queried case number is found"
@@ -279,9 +269,7 @@ def test_gbk(case_number):
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
-        assert isinstance(
-            item, dict
-        ), "checks whether the individual items are dicts"
+        assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert any(
             case_number in case_number for case_number in item["case_number"]
         ), "checks whether the queried case number is found"
@@ -321,9 +309,7 @@ def test_dsk(case_number, entscheidungstexte, rechtssaetze):
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
-        assert isinstance(
-            item, dict
-        ), "checks whether the individual items are dicts"
+        assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert any(
             case_number in case_number for case_number in item["case_number"]
         ), "checks whether the queried case number is found"
@@ -369,9 +355,7 @@ def test_dok(case_number, entscheidungstexte, rechtssaetze):
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
-        assert isinstance(
-            item, dict
-        ), "checks whether the individual items are dicts"
+        assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert any(
             case_number in case_number for case_number in item["case_number"]
         ), "checks whether the queried case number is found"
@@ -417,9 +401,7 @@ def test_pvak(case_number, entscheidungstexte, rechtssaetze):
 
     assert isinstance(response, list), "checks whether .info() returns a list"
     for item in wrapper_instance:
-        assert isinstance(
-            item, dict
-        ), "checks whether the individual items are dicts"
+        assert isinstance(item, dict), "checks whether the individual items are dicts"
         assert any(
             case_number in case_number for case_number in item["case_number"]
         ), "checks whether the queried case number is found"
