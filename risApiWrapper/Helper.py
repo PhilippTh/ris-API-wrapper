@@ -12,10 +12,7 @@ def _request(url, parameters) -> list:
     response = requests.get(url, params=parameters).json()
 
     # Return nothing if no items are found
-    if (
-        int(response["OgdSearchResult"]["OgdDocumentResults"]["Hits"]["#text"])
-        == 0
-    ):
+    if int(response["OgdSearchResult"]["OgdDocumentResults"]["Hits"]["#text"]) == 0:
         return []
     """
     If only one item is found, "OgdDocumentReference" contains only one dict.
@@ -23,33 +20,21 @@ def _request(url, parameters) -> list:
     dicts.
     """
     results = (
-        [
-            response["OgdSearchResult"]["OgdDocumentResults"][
-                "OgdDocumentReference"
-            ]
-        ]
+        [response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"]]
         if isinstance(
-            response["OgdSearchResult"]["OgdDocumentResults"][
-                "OgdDocumentReference"
-            ],
+            response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"],
             dict,
         )
-        else response["OgdSearchResult"]["OgdDocumentResults"][
-            "OgdDocumentReference"
-        ]
+        else response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"]
     )
 
     # If 100 items are found, there may be additional items on the next "page".
     if (
-        len(
-            response["OgdSearchResult"]["OgdDocumentResults"][
-                "OgdDocumentReference"
-            ]
-        )
+        len(response["OgdSearchResult"]["OgdDocumentResults"]["OgdDocumentReference"])
         == 100
     ):
         parameters["Seitennummer"] += 1
-        results += (_request(url,parameters))
+        results += _request(url, parameters)
 
     return results
 
@@ -80,13 +65,14 @@ def _input_validation(key: str, value: str, values: list) -> None:
     Validates the provided inputs against a list of possible inputs and raises
     an exception if not matching.
     """
-    if value not in values:
-        raise ValueError(
-            'Please provide a valid argument for "{0}". Accepted arguments for'
-            ' "{0}" are "{1}" or "{2}".'.format(
-                key, '", "'.join(values[0:-2]), values[-1]
+    if value:
+        if not any(sub_value in value for sub_value in values):
+            raise ValueError(
+                'Please provide a valid argument for "{0}". Accepted arguments for'
+                ' "{0}" are "{1}" or "{2}".'.format(
+                    key, '", "'.join(values[0:-1]), values[-1]
+                )
             )
-        )
 
 
 def _date_input_validation(key: str, value: str) -> None:
