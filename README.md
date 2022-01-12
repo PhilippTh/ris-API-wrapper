@@ -30,7 +30,7 @@ for rechtssatz in wrapper_instance:
 ```
 
 ```
-# Print all case number of decisions the High Constitutional Court has decided in a specific period.
+# Print all case numbers of decisions the High Constitutional Court has decided in a specific period.
 from risApiWrapper.Judikatur import Vfgh
 
 wrapper_instance = Vfgh(

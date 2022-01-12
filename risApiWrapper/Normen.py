@@ -4,6 +4,7 @@ from risApiWrapper.Helper import (
     _sort_results,
     _input_validation,
     _date_input_validation,
+    _to_list,
 )
 
 
@@ -69,8 +70,7 @@ class Bundesnormen(_Base_Class):
                    "Vertrag - mit Angabe einer internationalen Organisation",
                    "Vertrag - Multilateral"}
         Search for legal statutes by type of source. Multiple types can be
-        specified. The search operators 'oder' (or) or 'nicht' (not) can also
-        be used
+        specified by using the search operator 'oder' (or).
     section_type : {"Alle", "Artikel", "Paragraph", "Anlage"}
         Search for a specific type of legal statute or document. 'section_type'
         cannot be specified  without specifying either 'section_from' or
@@ -250,12 +250,7 @@ class Bundesnormen(_Base_Class):
             publishing_entity_name = None
             publishing_entity_number = None
 
-        if (
-            section_type
-            and not (section_from or section_to)
-            or (section_from or section_to)
-            and not section_type
-        ):
+        if not (section_type and (section_from or section_to)):
             raise ValueError(
                 "'section_type' cannot be specified without specifying 'section_from' or 'section_to' and vice versa."
             )
@@ -283,6 +278,7 @@ class Bundesnormen(_Base_Class):
         _date_input_validation("expiry_date_to", expiry_date_to)
 
         arguments = {
+            "Applikation": "BrKons",
             "Suchworte": keywords,
             "Titel": legal_code_name,
             "Index": index,
@@ -313,12 +309,77 @@ class Bundesnormen(_Base_Class):
 
 class Landesnormen(_Base_Class):
     """
-    Creates an iterable object representing a list of queried state legal norms.
-
     Parameters
     ----------
-    TODO(PTH): provide description
-
+    keywords : str
+        Search for specific keywords in a legal statute.
+    federal_state : {"Wien", "Burgenland", "Kaernten", "Niederoesterreich",
+                     "Oberoesterreich", "Salzburg", "Steiermark", "Tirol",
+                     "Vorarlberg"}
+        Search for legal statutes from a specific federal state. More than one
+        state can be provided as a list.
+    legal_code_name : str
+        Search within a specific legal code.
+    legal_code_number : str
+        TODO(PTH): provide description
+    index : str
+        Search for legal statutes by classification number of the main and
+        subgroup of federal law.
+    source_type : {"LG", "LVG", "K", "V", "S"}
+        Search for legal statutes by type of source. Multiple types can be
+        specified by using the search operator 'oder' (or).
+    section_type : {"Alle", "Artikel", "Paragraph", "Anlage"}
+        Search for a specific type of legal statute or document. 'section_type'
+        cannot be specified  without specifying either 'section_from' or
+        'section_to' or both.
+    section_from : str
+        Search for legal statutes from a certain point in the specified section
+        type. If 'section_from' is specified, 'section_type' has to be
+        specified as well.
+    section_to : str
+        Search for legal statutes to a certain point in the specified section
+        type. If 'section_to' is specified, 'section_type' has to be
+        specified as well.
+    version_date : str
+        Search for a legal statute version from a specific date. If either
+        effective_date_from, effective_date_to, expiry_date_from or
+        expiry_date_to is provided, version_date cannot be provided at the
+        same time.Format YYYY-mm-dd.
+    effective_date_from : str
+        Search for legal statutes with an effective date after the specified
+        date. If version_date is provided, effective_date_from cannot be
+        provided at the same time. Format YYYY-mm-dd.
+    effective_date_to : str
+        Search for legal statutes with an effective date before the specified
+        date. If version_date is provided, effective_date_to cannot be
+        provided at the same time. Format YYYY-mm-dd.
+    expiry_date_from : str
+        Search for legal statutes with an expiry date after the specified date.
+        If version_date is provided, expiry_date_from cannot be provided at
+        the same time.Format YYYY-mm-dd.
+    expiry_date_to : str
+        Search for legal statutes with an expiry date before the specified
+        date. If version_date is provided, expiry_date_to cannot be provided
+        at the same time. Format YYYY-mm-dd.
+    signing_date : str
+        Search for legal statutes in international treaties singed on a
+        specific date. Format YYYY-mm-dd.
+    publishing_entity : {"ABl.Nr. <Nr>", "ABlGraz <Nr>", "ALZ Folge <Nr>",
+                         "Abl. Nr. <Nr>", "BDVBl. <Nr>", "BDVBl. Nr. <Nr>",
+                         "BDVBl.Nr. <Nr>", "BGBl. Nr. <Nr>", "BGBl.Nr. <Nr>",
+                         "GBlfdLÖ.Nr. <Nr>", "GZ Nr. <Nr>", "GZ S. <Nr>",
+                         "LGBl Nr <Nr>", "LGBl. <Nr>", "LGBl. Nr. <Nr>",
+                         "LGBl.Nr. <Nr>", "LGuVBl. <Nr>", "LGuVBl.Nr. <Nr>",
+                         "OIB.Nr. <Nr>", "RGBl. Nr. <Nr>", "RGBl.Nr. <Nr>",
+                         "StGBl. Nr. <Nr>", "VuABl.Nr. <Nr>"}
+        Search for legal statutes published by a specific entity. Provide a
+        number instead of <Nr> to search for legal statutes of a specific
+        publication. Do not provide a number in order to search for legal
+        statutes in all publications of one publishing entity.
+    published : {"Undefined", "EinerWoche", "ZweiWochen", "EinemMonat",
+                 "DreiMonaten", "SechsMonaten", "EinemJahr"}
+        Search only for legal statutes published within a certain period of
+        time.
     Yields
     -------
     dict
@@ -331,26 +392,142 @@ class Landesnormen(_Base_Class):
         Is raised if the provided value is not accepted by the API.
     """
 
-    def __init__(self):
-        # TODO(PTH): validate input
+    def __init__(
+        self,
+        keywords=None,
+        federal_states=[],
+        legal_code_name=None,
+        legal_code_number=None,
+        index=None,
+        section_type=None,
+        source_type=None,
+        section_from=None,
+        section_to=None,
+        version_date=None,
+        effective_date_from=None,
+        effective_date_to=None,
+        expiry_date_from=None,
+        expiry_date_to=None,
+        signing_date=None,
+        publishing_entity=None,
+        published="Undefined",
+    ):
+
+        source_types = ["LG", "LVG", "K", "V", "S"]
+        _input_validation("source_type", source_type, source_types)
+
+        publishing_entity_names = [
+            "ABl.Nr.",
+            "ABlGraz",
+            "ALZ Folge",
+            "Abl. Nr.",
+            "BDVBl.",
+            "BDVBl. Nr.",
+            "BDVBl.Nr.",
+            "BGBl. Nr.",
+            "BGBl.Nr.",
+            "GBlfdLÖ.Nr.",
+            "GZ Nr.",
+            "GZ S.",
+            "LGBl Nr",
+            "LGBl.",
+            "LGBl. Nr.",
+            "LGBl.Nr.",
+            "LGuVBl.",
+            "LGuVBl.Nr.",
+            "OIB.Nr.",
+            "RGBl. Nr.",
+            "RGBl.Nr.",
+            "StGBl. Nr.",
+            "VuABl.Nr.",
+        ]
+        _input_validation(
+            "publishing_entity", publishing_entity, publishing_entity_names
+        )
+
+        if publishing_entity:
+            publishing_entity_name = [
+                name for name in publishing_entity_names if name in publishing_entity
+            ][0]
+            publishing_entity_number = publishing_entity.split()[-1]
+        else:
+            publishing_entity_name = None
+            publishing_entity_number = None
+
+        if not (section_type and (section_from or section_to)):
+            raise ValueError(
+                "'section_type' cannot be specified without specifying 'section_from' or 'section_to' and vice versa."
+            )
+
+        _input_validation(
+            "section_type",
+            section_type,
+            ["Alle", "Artikel", "Paragraph", "Anlage"],
+        )
+
+        if (
+            effective_date_from
+            or effective_date_to
+            or expiry_date_from
+            or expiry_date_to
+        ) and version_date:
+            raise ValueError(
+                "'version_date' and 'effective_date_from', 'effective_date_to', 'expiry_date_from' or 'expiry_date_to' cannot be provided in the same query since the API treats them as mutually exclusive. Please provide either 'version_date' or one or more of the other parameters."
+            )
+
+        _date_input_validation("version_date", version_date)
+        _date_input_validation("effective_date_from", effective_date_from)
+        _date_input_validation("effective_date_to", effective_date_to)
+        _date_input_validation("expiry_date_from", expiry_date_from)
+        _date_input_validation("expiry_date_to", expiry_date_to)
+
         arguments = {
-            "Suchworte": None,
-            "Titel": None,
-            "Index": None,
-            "Typ": None,
-            "Abschnitt": None,
-            "Fassung": None,
-            "Gesetzesnummer": None,
-            "Kundmachungsorgan": None,
-            "Kundmachungsorgannummer": None,
-            "Unterzeichnungsdatum": None,
-            "ImRisSeit": None,
+            "Applikation": "LrKons",
+            "Suchworte": keywords,
+            "Titel": legal_code_name,
+            "Index": index,
+            "Typ": source_type,
+            "Abschnitt[Typ]": section_type,
+            "Abschnitt[Von]": section_from,
+            "Abschnitt[Bis]": section_to,
+            "Fassung[FassungVom]": version_date,
+            "Fassung[VonInkrafttretensdatum]": effective_date_from,
+            "Fassung[BisInkrafttretensdatum]": effective_date_to,
+            "Fassung[VonAusserkrafttretensdatum]": expiry_date_from,
+            "Fassung[BisAusserkrafttretensdatum]": expiry_date_to,
+            "Gesetzesnummer": legal_code_number,
+            "Kundmachungsorgan": publishing_entity_name,
+            "Kundmachungsorgannummer": publishing_entity_number,
+            "Unterzeichnungsdatum": signing_date,
+            "ImRisSeit": published,
             "DokumenteProSeite": "OneHundred",
             "Seitennummer": 1,
         }
 
+        if federal_states:
+            federal_states = _to_list(federal_states)
+            for federal_state in federal_states:
+                _input_validation(
+                    "federal_states",
+                    federal_state,
+                    [
+                        "Wien",
+                        "Burgenland",
+                        "Kaernten",
+                        "Niederoesterreich",
+                        "Oberoesterreich",
+                        "Salzburg",
+                        "Steiermark",
+                        "Tirol",
+                        "Vorarlberg",
+                    ],
+                )
+            arguments = _get_federal_state(
+                arguments=arguments, federal_states_list=federal_states
+            )
+
         response = _request(
-            "https://data.bka.gv.at/ris/api/v2.5/landesnormen", arguments
+            "https://data.bka.gv.at/ris/api/v2.6/Landesrecht", arguments
         )
 
         self._results = _convert_results(response)
@@ -359,3 +536,31 @@ class Landesnormen(_Base_Class):
 def _convert_results(raw_results: list) -> list:
     # TODO(PTH): convert results
     return raw_results
+
+
+def _get_federal_state(arguments: dict, federal_states_list: list) -> dict:
+    """
+    As soon as one of the keys "Bundesland[SucheIn...]" is provided,
+    independent of the value, only search results from this federal state are
+    displayed. More than one key can be provided.
+    """
+    if any("Wien" in item for item in federal_states_list):
+        arguments["Bundesland[SucheInWien]"] = "On"
+    if any("Burgenland" in item for item in federal_states_list):
+        arguments["Bundesland[SucheInBurgenland]"] = "On"
+    if any("Kaernten" in item for item in federal_states_list):
+        arguments["Bundesland[SucheInKaernten]"] = "On"
+    if any("Niederoesterreich" in item for item in federal_states_list):
+        arguments["Bundesland[SucheInNiederoesterreich]"] = "On"
+    if any("Oberoesterreich" in item for item in federal_states_list):
+        arguments["Bundesland[SucheInOberoesterreich]"] = "On"
+    if any("Salzburg" in item for item in federal_states_list):
+        arguments["Bundesland[SucheInSalzburg]"] = "On"
+    if any("Steiermark" in item for item in federal_states_list):
+        arguments["Bundesland[SucheInSteiermark]"] = "On"
+    if any("Tirol" in item for item in federal_states_list):
+        arguments["Bundesland[SucheInTirol]"] = "On"
+    if any("Vorarlberg" in item for item in federal_states_list):
+        arguments["Bundesland[SucheInVorarlberg]"] = "On"
+
+    return arguments
