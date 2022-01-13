@@ -85,3 +85,52 @@ def _date_input_validation(key: str, value: str) -> None:
             f'The date "{value}" provided for "{key}" is not formatted'
             ' correctly. Please provide dates in the format "YYYY-MM-DD".'
         )
+
+
+def _get_content_urls(raw_case: dict) -> list:
+    """
+    Extracts all content urls from the raw case data and returns them as a list.
+    """
+    try:
+        # Sometimes (like 4Ob72/21y) multiple types of contents are
+        # provided which results in "ContentReference" containing a list.
+        content_urls = []
+        if isinstance(
+            raw_case["Data"]["Dokumentliste"]["ContentReference"], dict
+        ):
+            for url in raw_case["Data"]["Dokumentliste"][
+                "ContentReference"]["Urls"]["ContentUrl"]:
+                content_urls.append(
+                    {
+                        "Name": raw_case["Data"]["Dokumentliste"][
+                            "ContentReference"]["Name"],
+                        "Datatype": url["DataType"],
+                        "Url": url["Url"],
+                    }
+                )
+        else:
+            for element in raw_case["Data"]["Dokumentliste"][
+                "ContentReference"]:
+                if isinstance(element["Urls"]["ContentUrl"], dict):
+                    content_urls.append(
+                        {
+                            "Name": element["Name"],
+                            "Datatype": element["Urls"]["ContentUrl"][
+                                "DataType"],
+                            "Url": element["Urls"]["ContentUrl"]["Url"],
+                        }
+                    )
+
+                else:
+                    for url in element["Urls"]["ContentUrl"]:
+                        content_urls.append(
+                            {
+                                "Name": element["Name"],
+                                "Datatype": url["DataType"],
+                                "Url": url["Url"],
+                            }
+                        )
+        return content_urls
+
+    except KeyError:
+        return None
