@@ -5,6 +5,7 @@ from risApiWrapper.Helper import (
     _input_validation,
     _date_input_validation,
     _to_list,
+    _get_content_urls
 )
 
 
@@ -58,7 +59,7 @@ class Bundesnormen(_Base_Class):
     legal_code_name : str
         Search within a specific legal code.
     legal_code_number : str
-        TODO(PTH): provide description
+        Search within a specific legal code identified by number.
     index : str
         Search for legal statutes by classification number of the main and
         subgroup of federal law.
@@ -321,7 +322,7 @@ class Landesnormen(_Base_Class):
     legal_code_name : str
         Search within a specific legal code.
     legal_code_number : str
-        TODO(PTH): provide description
+        Search within a specific legal code identified by number.
     index : str
         Search for legal statutes by classification number of the main and
         subgroup of federal law.
@@ -534,8 +535,62 @@ class Landesnormen(_Base_Class):
 
 
 def _convert_results(raw_results: list) -> list:
-    # TODO(PTH): convert results
-    return raw_results
+    converted_results = []
+    for raw_case in raw_results:
+        converted_case = {}
+
+        converted_case["institution"] = raw_case["Date"]["Metadaten"]["Technisch"]["Organ"]
+        converted_case["published"] = raw_case["Data"]["Metadaten"]["Allgemein"]["Veroeffentlicht"]
+        converted_case["last_change"] = raw_case["Data"]["Metadaten"]["Allgemein"]["Geaendert"]
+
+        if raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"] == "BrKons":
+            first_level = "Bundesrecht"
+            second_level = "BrKons"
+        elif raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"] == "LrKons":
+            first_level = "Landesrecht"
+            second_level = "LrKons"
+        else:
+            raise Exception("The data found is neither 'Bundesrecht' nor 'Landesrecht'.")
+
+        converted_case["title"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level]["Titel"]
+        converted_case["short_title"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level]["Kurztitel"]
+        converted_case["source_type"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["Typ"]
+        converted_case["publishing_entity_name"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["StammnormPublikationsorgan"]
+        converted_case["publishing_entity_number"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["StammnormBgblnummer"]
+        converted_case["effective_date"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["Inkrafttretensdatum"]
+        converted_case["legal_code_number"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["Gesetzesnummer"]
+        converted_case["document_type"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["Dokumenttyp"]
+        converted_case["section_type"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["ArtikelParagraphAnlage"].split()[0]
+        converted_case["section_number"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["ArtikelParagraphAnlage"].split()[1]       
+
+        try:
+            converted_case["expiry_date"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["Ausserkrafttretensdatum"]
+        except KeyError:
+            converted_case["expiry_date"] = None
+        try:
+            converted_case["amendment_entity_name"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["NovellenPublikationsorgan"]
+        except KeyError:
+            converted_case["amendment_entity_name"] = None
+        try:
+            converted_case["amendment_entity_number"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["NovellenBgblnummer"]
+        except KeyError:
+            converted_case["amendment_entity_number"] = None
+        try:
+            converted_case["amendment_description"] = raw_case["Date"]["Metadaten"]["Technisch"]["Applikation"][first_level][second_level]["NovellenBeziehung"]
+        except KeyError:
+            converted_case["amendment_description"] = None
+
+        # TODO(PTH):
+        # Indizes ? 
+        # Beachte ?
+        # Schlagworte ?
+        # Aenderung ?
+
+        converted_case["content_urls"] = _get_content_urls(raw_case)
+
+        converted_results.append(converted_case)
+    
+    return converted_results
 
 
 def _get_federal_state(arguments: dict, federal_states_list: list) -> dict:
