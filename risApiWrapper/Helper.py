@@ -11,6 +11,13 @@ def _request(url, parameters) -> list:
     """
     response = requests.get(url, params=parameters).json()
 
+    #It could be the case that there are exactly 100 results in the first run
+    # The API throws an error {'OgdSearchResult': {'Error': {'Applikation': 'Bvwg', 'Message': 'soap:Client Die Seitennummer ist höher als die Anzahl der verfügbaren Seiten'}}}
+    # Hence an empty dict needs to be returned
+    if 'OgdDocumentResults' not in response["OgdSearchResult"]:
+        return []
+    
+
     # Return nothing if no items are found
     if int(response["OgdSearchResult"]["OgdDocumentResults"]["Hits"]["#text"]) == 0:
         return []
